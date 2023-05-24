@@ -1,6 +1,5 @@
 @import url(../vendor/normalize.css);
 @import url(../vendor/fonts/fonts.css);
-@import url(../blocks/preload/preload.css);
 @import url(../blocks/button-zeroing/button-zeroing.css);
 @import url(../blocks/transition-opacity/transition-opacity.css);
 @import url(../blocks/transition-background/transition-background.css);

@@ -2,18 +2,12 @@ export default function PopupWithForm(
   { title, name, submitBtnText, isOpen, onClose, children }
   ){
 
-  const handleContainerClick = (event) => {
-    event.stopPropagation();
-  };
-
   return(
     <div 
       className={`popup popup_type_${ name } ${isOpen && 'to-visible'}`}
-      onClick={ onClose }
     >
       <div 
         className="popup__container popup__container_type_form"
-        onClick={ handleContainerClick }
       >
         <form 
           className="popup__form" 

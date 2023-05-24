@@ -4,6 +4,8 @@
 
   background: url(../../../images/like.svg);
   object-fit: cover;
+  
+  cursor: pointer;
 }
 
 .card__like:hover {

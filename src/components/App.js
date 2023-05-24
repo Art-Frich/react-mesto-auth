@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -6,26 +6,38 @@ import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 
 export default function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
+  const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
+  const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
+  // нужен для transition + "предзагрузка"
+  const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
+  const [ selectedCard, setSelectedCard ] = React.useState( null ); 
 
   function handleEditAvatarClick(){
-    setIsEditAvatarPopupOpen( !isEditAvatarPopupOpen );
+    setIsEditAvatarPopupOpen( true );
   }
   
   function handleEditProfileClick(){
-    setIsEditProfilePopupOpen( !isEditProfilePopupOpen );
+    setIsEditProfilePopupOpen( true );
   }
   
   function handleAddPlaceClick(){
-    setIsAddPlacePopupOpen( !isAddPlacePopupOpen );
+    setIsAddPlacePopupOpen( true );
+  }
+
+  function handleCardClick( dataCard ){
+    setSelectedCard( dataCard );
+    setTimeout( () => setIsImgFullPopupOpen( true ), 300 ); //немного времени на предзагрузку
+    // немного замедляет время отклика, но зато нет "скачков" с картинкой, когда она прогружается
+    // пользователь чаще всего увидит сразу загруженную картинку и отрендеренную "за кадром"
   }
 
   function closeAllPopups(){
     setIsEditAvatarPopupOpen( false );
     setIsEditProfilePopupOpen( false );
     setIsAddPlacePopupOpen( false );
+    setIsImgFullPopupOpen( false );
+    setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
   return (
@@ -35,6 +47,7 @@ export default function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
       />
       <Footer />
       <PopupWithForm 
@@ -123,7 +136,11 @@ export default function App() {
           <span className="popup__error" />
         </label>
       </PopupWithForm>
-      <ImagePopup />
+      { selectedCard && <ImagePopup 
+        card={selectedCard}
+        onClose={closeAllPopups}
+        isOpen={isImgFullPopupOpen}
+      />}
     </>
   );
 }

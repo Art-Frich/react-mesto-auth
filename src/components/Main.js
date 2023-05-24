@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Card from './Card';
 import { api } from '../utils/Api';
 
-export default function Main( { onEditProfile, onAddPlace, onEditAvatar } ){
+export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardClick } ){
   const [ userName, setUserName ] = React.useState( 'Имя пока не получено' );
   const [ userDescription, setUserDescription ] = React.useState( 'Информации о вас пока нет' );
   const [ userAvatar, setUserAvatar ] = React.useState( '' );
@@ -19,7 +19,7 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar } ){
         setUserName( dataOne.name );
         setUserDescription( dataOne.about );
         setUserAvatar( dataOne.avatar );
-        setCards( dataTwo.map( ( item, i ) => Card( item, i ) ) );
+        setCards( dataTwo.map( item => Card( item, onCardClick) ) );
       })
       .catch( ([ errOne, errTwo ]) => alert( errOne, errTwo ) )
   }, [])
