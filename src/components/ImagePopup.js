@@ -6,7 +6,11 @@ export default function ImagePopup(){
           <img src="#" alt="Изображение" className="popup__img" />
           <figcaption className="popup__figcaption" />
         </figure>
-        <button className="popup__btn-close button-zeroing transition-opacity" type="button" name="Закрыть окно c изображением" />
+        <button 
+          className="popup__btn-close button-zeroing transition-opacity" 
+          type="button" 
+          name="Закрыть окно c изображением"
+        />
       </div>
     </div>
   )
