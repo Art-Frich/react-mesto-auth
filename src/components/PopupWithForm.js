@@ -1,39 +1,7 @@
-import logo from "../src/images/logo.svg";
-
-function App() {
-  return (
+export default function PopupWithForm(){
+  return(
     <>
-      <header className="header">
-        <img src={logo} alt="Логотип Mesto Russia" className="header__logo" />
-      </header>
-
-      <main className="main">
-        <section className="profile">
-          <div className="profile__avatar-container ">
-            <div className="profile__avatar-cover">
-              <button className="profile__avatar-edit button-zeroing" />
-            </div>
-            <img src="#" alt="Ваше изображение" className="profile__avatar" />
-          </div>
-          <div className="profile__text-about">
-            <div className="profile__title-container">
-              <h1 className="profile__title-name text-overflow" name="curNameUser">Имя пока не получено</h1>
-              <button className="profile__btn-edit button-zeroing transition-opacity" type="button" name="Изменить описание профиля" />
-            </div>
-            <p className="profile__subtitle text-overflow" name="curAboutUser">Информации о вас пока нет</p>
-          </div>
-          <button className="profile__btn-add button-zeroing transition-opacity" type="button" name="Добавить место" />
-        </section>
-        <section className="cards">
-          <ul className="cards__grid" />
-        </section>
-      </main>
-
-      <footer className="footer">
-        <p className="footer__author">© 2023 Art Frich</p>
-      </footer>
-
-      <div className="popup popup_type_edit-profile">
+    <div className="popup popup_type_edit-profile">
         <div className="popup__container popup__container_type_form">
           <form className="popup__form" name="editProfileText" noValidate>
             <h2 className="popup__title">Редактировать профиль</h2>
@@ -73,16 +41,6 @@ function App() {
         </div>
       </div>
 
-      <div className="popup popup_type_full-img-place">
-        <div className="popup__container popup__container_type_figure">
-          <figure className="popup__figure">
-            <img src="#" alt="Изображение" className="popup__img" />
-            <figcaption className="popup__figcaption" />
-          </figure>
-          <button className="popup__btn-close button-zeroing transition-opacity" type="button" name="Закрыть окно c изображением" />
-        </div>
-      </div>
-
       <div className="popup popup_type_confirmDelete">
         <div className="popup__container popup__container_type_form ">
           <form className="popup__form" name="confirmCardDelete" noValidate>
@@ -95,7 +53,7 @@ function App() {
         </div>
       </div>
 
-      <div className="popup popup_type_editAvatar">
+      <div className="popup popup_type_edit-avatar">
         <div className="popup__container popup__container_type_form ">
           <form className="popup__form" name="avatarUpdate" noValidate>
             <h2 className="popup__title">Обновить аватар</h2>
@@ -110,16 +68,6 @@ function App() {
           <button className="popup__btn-close button-zeroing transition-opacity" type="button" name="Закрыть окно" />
         </div>
       </div>
-
-      <section className>
-        <div className="overlay">
-          <h2 className="title" />
-          <button />
-        </div>
-        <button />
-      </section>
     </>
-  );
+  )
 }
-
-export default App;
