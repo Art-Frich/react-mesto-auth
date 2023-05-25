@@ -1,8 +1,8 @@
 # Mesto (on React)
-### [Ссылка на проект](https://art-frich.github.io/mesto/)
+### [Ссылка на проект](https://art-frich.github.io/mesto-react/)
 ### О чем?
 
-Проект служит для отработки работы с React, для чего был произведён рефакторинг проекта [Mesto](https://art-frich.github.io/mesto-react/)
+Проект служит для отработки работы с React, для чего был произведён рефакторинг проекта [Mesto](https://github.com/Art-Frich/mesto)
 ### Готовый функционал
 
 * Открыть\закрыть по клику на крестик попап добавления карточки места.
