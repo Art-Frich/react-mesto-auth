@@ -14,7 +14,6 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
       api.getInitialCards()
     ])
       .then( ([ userData, dataInitialCards ]) => {
-        myId = userData._id;
         setUserName( userData.name );
         setUserDescription( userData.about );
         setUserAvatar( userData.avatar );
