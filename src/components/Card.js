@@ -19,6 +19,7 @@ export default function Card( dataCard, onCardClick ){
               className="card__like button-zeroing transition-opacity transition-background"
               type="button"
               name="Поставить лайк"
+              aria-label="set like"
             ></button>
             <span className="card__like-count">{dataCard.likes.length}</span>
           </div>
@@ -27,6 +28,7 @@ export default function Card( dataCard, onCardClick ){
           className="card__del-card-btn button-zeroing transition-opacity"
           type="button"
           name="удалить место"
+          aria-label="delete card"
         ></button>
       </div>
     </li>

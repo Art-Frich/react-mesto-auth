@@ -7,19 +7,18 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
   const [ userDescription, setUserDescription ] = React.useState( 'Информации о вас пока нет' );
   const [ userAvatar, setUserAvatar ] = React.useState( '' );
   const [ cards, setCards ] = React.useState( [] );
-  let myId;
 
   React.useEffect(() => {
     Promise.all([ 
       api.getUserDataFromServer(), 
       api.getInitialCards()
     ])
-      .then( ([ dataOne, dataTwo ]) => {
-        myId = dataOne._id;
-        setUserName( dataOne.name );
-        setUserDescription( dataOne.about );
-        setUserAvatar( dataOne.avatar );
-        setCards( dataTwo.map( item => Card( item, onCardClick) ) );
+      .then( ([ userData, dataInitialCards ]) => {
+        myId = userData._id;
+        setUserName( userData.name );
+        setUserDescription( userData.about );
+        setUserAvatar( userData.avatar );
+        setCards( dataInitialCards );
       })
       .catch( ([ errOne, errTwo ]) => alert( errOne, errTwo ) )
   }, [])
@@ -32,6 +31,7 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
             <button 
               className="profile__avatar-edit button-zeroing" 
               onClick={ onEditAvatar }
+              aria-label="edit profile"
             />
           </div>
           <img src={userAvatar} alt="Ваше изображение" className="profile__avatar" />
@@ -48,6 +48,7 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
               type="button" 
               name="Изменить описание профиля" 
               onClick={ onEditProfile }
+              aria-label="edit data of profile"
             />
           </div>
           <p 
@@ -62,11 +63,12 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
           type="button" 
           name="Добавить место" 
           onClick={ onAddPlace }
+          aria-label="add new card-place"
         />
       </section>
       <section className="cards">
         <ul className="cards__grid">
-          {cards}
+          { cards.map( item => Card( item, onCardClick) ) }
         </ul>
       </section>
     </main>
