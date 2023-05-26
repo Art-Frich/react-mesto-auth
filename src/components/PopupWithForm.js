@@ -4,7 +4,7 @@ export default function PopupWithForm(
 
   return(
     <div 
-      className={`popup popup_type_${ name } ${isOpen && 'to-visible'}`}
+      className={`popup popup_type_${ name } ${isOpen ? 'to-visible' : ''}`}
     >
       <div 
         className="popup__container popup__container_type_form"

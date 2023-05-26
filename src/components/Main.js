@@ -19,7 +19,9 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
         setUserAvatar( userData.avatar );
         setCards( dataInitialCards );
       })
-      .catch( ([ errOne, errTwo ]) => alert( errOne, errTwo ) )
+      .catch( ([ errUserData, errInitialCards ]) => {
+        alert( errUserData, errInitialCards ) 
+      })
   }, [])
 
   return(
