@@ -4,14 +4,19 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
+import { api } from '../utils/Api.js';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 export default function App() {
+  const [ currentUser, setCurrentUser ] = React.useState({});
+  const [ cards, setCards ] = React.useState( [] );
+  const [ selectedCard, setSelectedCard ] = React.useState( null );
+
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
   const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
   // нужен для transition + "предзагрузка"
   const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
-  const [ selectedCard, setSelectedCard ] = React.useState( null ); 
 
   function handleEditAvatarClick(){
     setIsEditAvatarPopupOpen( true );
@@ -40,8 +45,20 @@ export default function App() {
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
+  React.useEffect( async () => {
+    Promise.all([ 
+      api.getUserInfo(), 
+      api.getInitialCards()
+    ])
+      .then( ([ userData, dataInitialCards ]) => {
+        setCards( dataInitialCards );
+        setCurrentUser( userData );
+      })
+      .catch( err => alert('Ошибка, бро: ' + err) );
+  }, []);
+
   return (
-    <>
+    <CurrentUserContext.Provider value={currentUser}>
       <Header />
       <Main 
         onEditProfile={handleEditProfileClick}
@@ -141,6 +158,6 @@ export default function App() {
         onClose={closeAllPopups}
         isOpen={isImgFullPopupOpen}
       />}
-    </>
+    </CurrentUserContext.Provider>
   );
 }

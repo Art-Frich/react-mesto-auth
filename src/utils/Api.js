@@ -30,7 +30,7 @@ class Api {
    * Позволяет получить данные пользователя, необходимые для рендера связанных разделов
    * @returns response данных пользователя
    */
-  getUserDataFromServer() {
+  getUserInfo() {
     return fetch( this._urlServer + this._qUsersMe, {
       headers: {
         authorization: this._token

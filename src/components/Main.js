@@ -1,28 +1,10 @@
 import React, { useState } from 'react';
 import Card from './Card';
 import { api } from '../utils/Api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardClick } ){
-  const [ userName, setUserName ] = React.useState( 'Имя пока не получено' );
-  const [ userDescription, setUserDescription ] = React.useState( 'Информации о вас пока нет' );
-  const [ userAvatar, setUserAvatar ] = React.useState( '' );
-  const [ cards, setCards ] = React.useState( [] );
-
-  React.useEffect(() => {
-    Promise.all([ 
-      api.getUserDataFromServer(), 
-      api.getInitialCards()
-    ])
-      .then( ([ userData, dataInitialCards ]) => {
-        setUserName( userData.name );
-        setUserDescription( userData.about );
-        setUserAvatar( userData.avatar );
-        setCards( dataInitialCards );
-      })
-      .catch( ([ errUserData, errInitialCards ]) => {
-        alert( errUserData, errInitialCards ) 
-      })
-  }, [])
+  const currentUser = React.useContext( CurrentUserContext )
 
   return(
     <main className="main">
@@ -35,14 +17,14 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
               aria-label="edit profile"
             />
           </div>
-          <img src={userAvatar} alt="Ваше изображение" className="profile__avatar" />
+          <img src={ currentUser.avatar } alt="Ваше изображение" className="profile__avatar" />
         </div>
         <div className="profile__text-about">
           <div className="profile__title-container">
             <h1 
               className="profile__title-name text-overflow" 
               name="curNameUser">
-              {userName}
+              { currentUser.name }
             </h1>
             <button 
               className="profile__btn-edit button-zeroing transition-opacity" 
@@ -56,7 +38,7 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
             className="profile__subtitle text-overflow" 
             name="curAboutUser"
           >
-            {userDescription}
+            { currentUser.about }
           </p>
         </div>
         <button 
