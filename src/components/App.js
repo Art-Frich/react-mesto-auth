@@ -10,6 +10,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 export default function App() {
   const [ currentUser, setCurrentUser ] = React.useState({});
   const [ selectedCard, setSelectedCard ] = React.useState( null );
+  const [ cards, setCards ] = React.useState( [] );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
@@ -36,6 +37,20 @@ export default function App() {
     // пользователь чаще всего увидит сразу загруженную картинку и отрендеренную "за кадром"
   }
 
+  function handleCardLike( dataCard ){
+    const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
+    api.changeLikeCardStatus( dataCard._id, isLiked ).then( newCard => {
+      setCards( state => state.map( c => c._id === dataCard._id ? newCard : c));
+    });
+  }
+  
+  function handleCardDelete( dataCard ){
+    const id = dataCard._id;
+    api.deleteCard( id ).then( () => {
+      setCards( () => cards.filter( card => card._id !== id ))
+    });
+  }
+
   function closeAllPopups(){
     setIsEditAvatarPopupOpen( false );
     setIsEditProfilePopupOpen( false );
@@ -44,10 +59,14 @@ export default function App() {
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
-  React.useEffect( async () => {
+  React.useEffect( () => {
     try {
+      (async () =>{
       const userData = await api.getUserInfo();
       setCurrentUser( userData );
+      const dataCard =  await api.getInitialCards();
+      setCards( dataCard );
+      })()
     } catch( err ) {
       alert('Ошибка, бро: ' + err);
     }
@@ -61,6 +80,9 @@ export default function App() {
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
         onCardClick={handleCardClick}
+        onCardLike={handleCardLike}
+        onCardDelete={handleCardDelete}
+        cards={cards}
       />
       <Footer />
       <PopupWithForm 
