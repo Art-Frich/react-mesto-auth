@@ -4,7 +4,17 @@ import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardClick } ){
+  const [ cards, setCards ] = React.useState( [] );
   const currentUser = React.useContext( CurrentUserContext )
+
+  React.useEffect( async () => {
+    try{
+      const dataCard =  await api.getInitialCards();
+      setCards( dataCard );
+    } catch( err ) {
+      alert('Ошибка, бро: ' + err);
+    }
+  })
 
   return(
     <main className="main">

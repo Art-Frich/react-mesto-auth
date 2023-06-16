@@ -9,7 +9,6 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 export default function App() {
   const [ currentUser, setCurrentUser ] = React.useState({});
-  const [ cards, setCards ] = React.useState( [] );
   const [ selectedCard, setSelectedCard ] = React.useState( null );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
@@ -46,15 +45,12 @@ export default function App() {
   }
 
   React.useEffect( async () => {
-    Promise.all([ 
-      api.getUserInfo(), 
-      api.getInitialCards()
-    ])
-      .then( ([ userData, dataInitialCards ]) => {
-        setCards( dataInitialCards );
-        setCurrentUser( userData );
-      })
-      .catch( err => alert('Ошибка, бро: ' + err) );
+    try {
+      const userData = await api.getUserInfo();
+      setCurrentUser( userData );
+    } catch( err ) {
+      alert('Ошибка, бро: ' + err);
+    }
   }, []);
 
   return (
