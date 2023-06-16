@@ -139,6 +139,12 @@ class Api {
       .then( res => this._handleResponse( res ) )
   }
 
+  changeLikeCardStatus( id, isLiked ){
+    return isLiked
+      ? this.deleteLike( id )
+      : this.setLike( id )
+  }
+
   /**
    * Позволяет обновить аватар пользователя
    * @param {string} newAvatarUrl 

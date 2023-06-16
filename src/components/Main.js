@@ -1,20 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Card from './Card';
-import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardClick } ){
-  const [ cards, setCards ] = React.useState( [] );
+export default function Main({ 
+  onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete ,cards 
+  }){
   const currentUser = React.useContext( CurrentUserContext )
-
-  React.useEffect( async () => {
-    try{
-      const dataCard =  await api.getInitialCards();
-      setCards( dataCard );
-    } catch( err ) {
-      alert('Ошибка, бро: ' + err);
-    }
-  })
 
   return(
     <main className="main">
@@ -61,7 +52,16 @@ export default function Main( { onEditProfile, onAddPlace, onEditAvatar, onCardC
       </section>
       <section className="cards">
         <ul className="cards__grid">
-          { cards.map( item => Card( item, onCardClick) ) }
+          { cards.map( (item) => (
+            <li className="cards__grid-item" key={ item._id }>
+              <Card 
+                dataCard={item} 
+                onCardClick={onCardClick} 
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
+              />
+            </li>)) 
+          }
         </ul>
       </section>
     </main>
