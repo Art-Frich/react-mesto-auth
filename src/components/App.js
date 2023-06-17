@@ -55,25 +55,25 @@ export default function App() {
   }
 
   function handleUpdateUser( newUserData ){
-    api.updateUserData( newUserData.name, newUserData.about )
+    return api.updateUserData( newUserData.name, newUserData.about )
       .then( (res) => setCurrentUser( res ))
       .then( () => closeAllPopups());
   }
 
   function handleUpdateAvatar( newUserAvatar ){
-    api.updateAvatar( newUserAvatar.avatar )
+    return api.updateAvatar( newUserAvatar.avatar )
       .then( (res) => setCurrentUser( res ))
       .then( () => closeAllPopups());
   }
 
   function handleAddPlaceSubmit( newCardData ){
-    api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
+    return api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
       .then( (newCard) => setCards( [newCard, ...cards] ))
       .then( () => closeAllPopups() );
   }
 
   function handleConfirmDelete(){
-    api.deleteCard( idCardOnDelete )
+    return api.deleteCard( idCardOnDelete )
       .then( () => {
         setCards( () => cards.filter( card => card._id !== idCardOnDelete ))
       })

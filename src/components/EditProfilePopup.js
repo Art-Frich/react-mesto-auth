@@ -6,6 +6,7 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
   const currentUser = React.useContext( CurrentUserContext );
   const [ name, setName ] = React.useState("");
   const [ description, setDescription ] = React.useState("");
+  const [ fetchCondition, setFetchConditon ] = React.useState( false );
 
   function handleChangeName( e ){
     setName( e.target.value );
@@ -17,10 +18,11 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
 
   function handleSubmit( e ){
     e.preventDefault();
+    setFetchConditon( true );
     onUpdateUser({
       name,
       about: description,
-    });
+    }).then( () => setFetchConditon( false ) );
   }
 
   React.useEffect( () => {
@@ -34,6 +36,8 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
       name="edit-profile" 
       title="Редактировать профиль" 
       submitBtnText="Сохранить"
+      submitBtnTextFetchCondition="Пытаюсь..."
+      fetchCondition={ fetchCondition }
       isOpen={ isOpen }
       onClose={ onClose }
       onSubmit={ handleSubmit }

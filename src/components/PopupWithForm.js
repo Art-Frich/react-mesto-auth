@@ -1,5 +1,5 @@
 export default function PopupWithForm(
-  { title, name, submitBtnText, isOpen, onClose, onSubmit, children }
+  { title, name, submitBtnText, submitBtnTextFetchCondition, isOpen, onClose, onSubmit, children, fetchCondition }
   ){
 
   return(
@@ -22,7 +22,7 @@ export default function PopupWithForm(
             type="submit" 
             name={`submit-btn-${ name }`}
           >
-            { submitBtnText }
+            { fetchCondition ? submitBtnTextFetchCondition : submitBtnText }
           </button>
         </form>
         <button 

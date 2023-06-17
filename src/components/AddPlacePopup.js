@@ -2,15 +2,17 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards }){
+  const [ fetchCondition, setFetchConditon ] = React.useState( false );
   const namePlaceRef = React.useRef();
   const urlPlaceRef = React.useRef();
 
   function handleSubmit( e ){
     e.preventDefault();
+    setFetchConditon( true );
     onAddPlace( {
       namePlace: namePlaceRef.current.value,
       urlPlace: urlPlaceRef.current.value
-    });
+    }).then( () => setFetchConditon( false ) );
   }
 
   React.useEffect( () => {
@@ -23,6 +25,8 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards }){
       name="add-place" 
       title="Новое место" 
       submitBtnText="Создать"
+      submitBtnTextFetchCondition="Пытаюсь..."
+      fetchCondition={ fetchCondition }
       isOpen={ isOpen }
       onClose={ onClose }
       onSubmit={ handleSubmit }

@@ -5,12 +5,14 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }){
   const avatarRef = React.useRef();
   const currentUser = React.useContext( CurrentUserContext )
+  const [ fetchCondition, setFetchConditon ] = React.useState( false );
 
   function handleSubmit( e ){
     e.preventDefault();
+    setFetchConditon( true );
     onUpdateAvatar({
       avatar: avatarRef.current.value
-    });
+    }).then( () => setFetchConditon( false ) );
   }
 
   React.useEffect( () => {
@@ -22,6 +24,8 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }){
       name="edit-avatar" 
       title="Обновить аватар" 
       submitBtnText="Сохранить"
+      submitBtnTextFetchCondition="Я тебя вижу..."
+      fetchCondition={ fetchCondition }
       isOpen={ isOpen }
       onClose={ onClose }
       onSubmit={ handleSubmit }

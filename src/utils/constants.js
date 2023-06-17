@@ -1,72 +1,74 @@
-// Кнопки
-export const btnEditProfile = document.querySelector('.profile__btn-edit');
-export const btnAddPlace = document.querySelector('.profile__btn-add');
-export const btnEditAvatar = document.querySelector('.profile__avatar-edit');
+// // Кнопки
+// export const btnEditProfile = document.querySelector('.profile__btn-edit');
+// export const btnAddPlace = document.querySelector('.profile__btn-add');
+// export const btnEditAvatar = document.querySelector('.profile__avatar-edit');
 
-// Селекторы
-export const selectorCards = '.cards__grid';
-export const errMsg = 'Произошла какая-то ошибка...\n';
+// // Селекторы
+// export const selectorCards = '.cards__grid';
 
-// Служебные
-const inputSelector = '.popup__input';
-const popupBtnSubmitSelector = '.popup__btn-submit';
-const btnSubmitFetchCondition = 'Сохранение...';
-const popupConfig = {
-  classBtnClose: 'popup__btn-close',
-  classPopupOpened: 'to-visible'
-}
+// // Текст
+// export const errMsg = 'Произошла какая-то ошибка...\n';
 
-// Конфиги
-export const popupWithImageConfig = {
-  popupConfig: popupConfig,
-  popupSelector: '.popup_type_full-img-place',
-  figureSelector: '.popup__figure',
-  imgSelector: '.popup__img',
-  figcaptionSelector: '.popup__figcaption'
-}
+// // Служебные
+// const inputSelector = '.popup__input';
+// const popupBtnSubmitSelector = '.popup__btn-submit';
+// const btnSubmitFetchCondition = 'Сохранение...';
+// const popupConfig = {
+//   classBtnClose: 'popup__btn-close',
+//   classPopupOpened: 'to-visible'
+// }
 
-export const popupAddPlaceConfig = {
-  popupConfig: popupConfig,
-  inputSelector: inputSelector,
-  popupSelector: '.popup_type_add-place',
-  nameForm: 'addNewPlace',
-  btnSubmitSelector: popupBtnSubmitSelector,
-  btnSubmitFetchCondition: btnSubmitFetchCondition,
-}
+// // Конфиги
+// export const popupWithImageConfig = {
+//   popupConfig: popupConfig,
+//   popupSelector: '.popup_type_full-img-place',
+//   figureSelector: '.popup__figure',
+//   imgSelector: '.popup__img',
+//   figcaptionSelector: '.popup__figcaption'
+// }
 
-export const popupEditProfileConfig = {
-  popupConfig: popupConfig,
-  inputSelector: inputSelector,
-  popupSelector: '.popup_type_edit-profile',
-  nameForm: 'editProfileText',
-  btnSubmitSelector: popupBtnSubmitSelector,
-  btnSubmitFetchCondition: btnSubmitFetchCondition,
-}
+// export const popupAddPlaceConfig = {
+//   popupConfig: popupConfig,
+//   inputSelector: inputSelector,
+//   popupSelector: '.popup_type_add-place',
+//   nameForm: 'addNewPlace',
+//   btnSubmitSelector: popupBtnSubmitSelector,
+//   btnSubmitFetchCondition: 'Пытаюсь...',
+// }
 
-export const userInfoConfig = {
-  selectorNameUserContainer: '.profile__title-name',
-  selectorUserAboutContainer: '.profile__subtitle',
-  selectorUserAvatar: '.profile__avatar'
-}
+// export const popupEditProfileConfig = {
+//   popupConfig: popupConfig,
+//   inputSelector: inputSelector,
+//   popupSelector: '.popup_type_edit-profile',
+//   nameForm: 'editProfileText',
+//   btnSubmitSelector: popupBtnSubmitSelector,
+//   btnSubmitFetchCondition: btnSubmitFetchCondition,
+// }
 
-export const validateConfig = {
-  inputSelector: inputSelector,
-  submitBtnSelector: '.popup__btn-submit',
-  inputUnvalidateClass: 'popup__input_type_error',
-  errorSelector: '.popup__error',
-};
+// export const userInfoConfig = {
+//   selectorNameUserContainer: '.profile__title-name',
+//   selectorUserAboutContainer: '.profile__subtitle',
+//   selectorUserAvatar: '.profile__avatar'
+// }
 
-export const cardConfig = {
-  cardSelector: '.cards__grid-item',
-  imgSelector: '.card__photo',
-  titleSelector: '.card__title',
-  likeSelector: '.card__like',
-  btnDelSelector: '.card__del-card-btn',
-  classLikeActive: 'card__like_active',
-  templateSelector: '.template',
-  countLikeSelector: '.card__like-count',
-  btnDellHiddenClass: 'to-visible'
-}
+// export const validateConfig = {
+//   inputSelector: inputSelector,
+//   submitBtnSelector: '.popup__btn-submit',
+//   inputUnvalidateClass: 'popup__input_type_error',
+//   errorSelector: '.popup__error',
+// };
+
+// export const cardConfig = {
+//   cardSelector: '.cards__grid-item',
+//   imgSelector: '.card__photo',
+//   titleSelector: '.card__title',
+//   likeSelector: '.card__like',
+//   btnDelSelector: '.card__del-card-btn',
+//   classLikeActive: 'card__like_active',
+//   templateSelector: '.template',
+//   countLikeSelector: '.card__like-count',
+//   btnDellHiddenClass: 'to-visible'
+// }
 
 export const apiConfig = {
   token: 'e07a98d9-da5b-4bb3-83f5-8be59ad95ea9',
@@ -78,19 +80,19 @@ export const apiConfig = {
   qAvatar: '/avatar'
 }
 
-export const popupConfirmDeleteConfig = {
-  popupConfig: popupConfig,
-  popupSelector: '.popup_type_confirmDelete',
-  nameForm: 'confirmCardDelete',
-  btnSubmitSelector: popupBtnSubmitSelector,
-  btnSubmitFetchCondition: 'Удаление...',
-}
+// export const popupConfirmDeleteConfig = {
+//   popupConfig: popupConfig,
+//   popupSelector: '.popup_type_confirmDelete',
+//   nameForm: 'confirmCardDelete',
+//   btnSubmitSelector: popupBtnSubmitSelector,
+//   btnSubmitFetchCondition: 'Удаление...',
+// }
 
-export const popupEditAvatarConfig = {
-  popupConfig: popupConfig,
-  inputSelector: inputSelector,
-  popupSelector: '.popup_type_editAvatar',
-  nameForm: 'avatarUpdate',
-  btnSubmitSelector: popupBtnSubmitSelector,
-  btnSubmitFetchCondition: btnSubmitFetchCondition,
-}
+// export const popupEditAvatarConfig = {
+//   popupConfig: popupConfig,
+//   inputSelector: inputSelector,
+//   popupSelector: '.popup_type_editAvatar',
+//   nameForm: 'avatarUpdate',
+//   btnSubmitSelector: popupBtnSubmitSelector,
+//   btnSubmitFetchCondition: btnSubmitFetchCondition,
+// }
