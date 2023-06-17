@@ -2,11 +2,11 @@ import React from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
-import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
+import ConfirmDeletePopup from './ConfirmDeletePopup.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
@@ -14,10 +14,12 @@ export default function App() {
   const [ currentUser, setCurrentUser ] = React.useState( {} );
   const [ selectedCard, setSelectedCard ] = React.useState( null );
   const [ cards, setCards ] = React.useState([]);
+  const [ idCardOnDelete, setIdCardOnDelete ] = React.useState( null );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
   const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
+  const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = React.useState( false );
   // нужен для transition + "предзагрузка"
   const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
 
@@ -33,6 +35,11 @@ export default function App() {
     setIsAddPlacePopupOpen( true );
   }
 
+  function handleCardDelete( dataCard ){
+    setIsConfirmDeletePopupOpen( true );
+    setIdCardOnDelete( dataCard._id );
+  }
+
   function handleCardClick( dataCard ){
     setSelectedCard( dataCard );
     setTimeout( () => setIsImgFullPopupOpen( true ), 300 ); //немного времени на предзагрузку
@@ -44,13 +51,6 @@ export default function App() {
     const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
     api.changeLikeCardStatus( dataCard._id, isLiked ).then( newCard => {
       setCards( state => state.map( c => c._id === dataCard._id ? newCard : c));
-    });
-  }
-  
-  function handleCardDelete( dataCard ){
-    const id = dataCard._id;
-    api.deleteCard( id ).then( () => {
-      setCards( () => cards.filter( card => card._id !== id ))
     });
   }
 
@@ -72,11 +72,20 @@ export default function App() {
       .then( () => closeAllPopups() );
   }
 
+  function handleConfirmDelete(){
+    api.deleteCard( idCardOnDelete )
+      .then( () => {
+        setCards( () => cards.filter( card => card._id !== idCardOnDelete ))
+      })
+      .then( () => closeAllPopups() );
+  }
+
   function closeAllPopups(){
     setIsEditAvatarPopupOpen( false );
     setIsEditProfilePopupOpen( false );
     setIsAddPlacePopupOpen( false );
     setIsImgFullPopupOpen( false );
+    setIsConfirmDeletePopupOpen( false );
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
@@ -124,13 +133,17 @@ export default function App() {
         onAddPlace={ handleAddPlaceSubmit }
         cards={ cards }
       />
-      <ConfirmDeletePopup />
+      <ConfirmDeletePopup 
+        isOpen={ isConfirmDeletePopupOpen }
+        onClose={ closeAllPopups }
+        onConfirmDelete={ handleConfirmDelete }
+      />
       { selectedCard && <ImagePopup 
         card={selectedCard}
-        onClose={closeAllPopups}
+        onClose={ closeAllPopups }
         isOpen={isImgFullPopupOpen}
       />}
-      
+
     </CurrentUserContext.Provider>
   );
 }
