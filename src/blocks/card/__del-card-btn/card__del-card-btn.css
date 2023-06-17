@@ -6,9 +6,6 @@
   width: 18px;
   height: 19px;
 
-  visibility: hidden;
-  opacity: 0;
-
   background: url(../../../images/trash.svg);
   object-fit: cover;
   z-index: 2;

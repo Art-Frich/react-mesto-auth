@@ -4,13 +4,14 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
+import EditProfilePopup from './EditProfilePopup.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 export default function App() {
   const [ currentUser, setCurrentUser ] = React.useState({});
   const [ selectedCard, setSelectedCard ] = React.useState( null );
-  const [ cards, setCards ] = React.useState( [] );
+  const [ cards, setCards ] = React.useState([]);
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
@@ -51,6 +52,12 @@ export default function App() {
     });
   }
 
+  function handleUpdateUser( newUserData ){
+    api.updateUserData( newUserData.name, newUserData.about )
+      .then( (res) => setCurrentUser( res ))
+      .then( () => closeAllPopups())
+  }
+
   function closeAllPopups(){
     setIsEditAvatarPopupOpen( false );
     setIsEditProfilePopupOpen( false );
@@ -85,38 +92,11 @@ export default function App() {
         cards={cards}
       />
       <Footer />
-      <PopupWithForm 
-        name="edit-profile" 
-        title="Редактировать профиль" 
-        submitBtnText="Сохранить"
-        isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}
-      >
-        <label className="popup__field">
-          <input 
-            className="popup__input popup__input_type_name-user" 
-            name="nameUser" 
-            placeholder="Имя или то, что вам его заменит" 
-            type="text" 
-            minLength={2} 
-            maxLength={40} 
-            required 
-          />
-          <span className="popup__error" />
-        </label>
-        <label className="popup__field">
-          <input 
-            className="popup__input popup__input_type_about" 
-            name="aboutUser" 
-            placeholder="Кто вы? Можете оставить это место пустым =)" 
-            type="text" 
-            minLength={2} 
-            maxLength={200} 
-            required 
-          />
-          <span className="popup__error" />
-        </label>
-      </PopupWithForm>
+      <EditProfilePopup 
+        isOpen={ isEditProfilePopupOpen } 
+        onClose={ closeAllPopups }
+        onUpdateUser={ handleUpdateUser }
+      />
       <PopupWithForm 
         name="add-place" 
         title="Новое место" 

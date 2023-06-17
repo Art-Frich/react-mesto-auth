@@ -1,5 +1,5 @@
 export default function PopupWithForm(
-  { title, name, submitBtnText, isOpen, onClose, children }
+  { title, name, submitBtnText, isOpen, onClose, onSubmit, children }
   ){
 
   return(
@@ -13,6 +13,7 @@ export default function PopupWithForm(
           className="popup__form" 
           name={`${ name }`} 
           noValidate
+          onSubmit={ onSubmit }
         >
           <h2 className="popup__title">{ title }</h2>
           { children }
