@@ -5,11 +5,13 @@ import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
+import EditAvatarPopup from './EditAvatarPopup.js';
+import AddPlacePopup from './AddPlacePopup.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 export default function App() {
-  const [ currentUser, setCurrentUser ] = React.useState({});
+  const [ currentUser, setCurrentUser ] = React.useState( {} );
   const [ selectedCard, setSelectedCard ] = React.useState( null );
   const [ cards, setCards ] = React.useState([]);
 
@@ -55,7 +57,19 @@ export default function App() {
   function handleUpdateUser( newUserData ){
     api.updateUserData( newUserData.name, newUserData.about )
       .then( (res) => setCurrentUser( res ))
-      .then( () => closeAllPopups())
+      .then( () => closeAllPopups());
+  }
+
+  function handleUpdateAvatar( newUserAvatar ){
+    api.updateAvatar( newUserAvatar.avatar )
+      .then( (res) => setCurrentUser( res ))
+      .then( () => closeAllPopups());
+  }
+
+  function handleAddPlaceSubmit( newCardData ){
+    api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
+      .then( (newCard) => setCards( [newCard, ...cards] ))
+      .then( () => closeAllPopups() );
   }
 
   function closeAllPopups(){
@@ -81,6 +95,7 @@ export default function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
+
       <Header />
       <Main 
         onEditProfile={handleEditProfileClick}
@@ -92,70 +107,30 @@ export default function App() {
         cards={cards}
       />
       <Footer />
+
       <EditProfilePopup 
         isOpen={ isEditProfilePopupOpen } 
         onClose={ closeAllPopups }
         onUpdateUser={ handleUpdateUser }
       />
-      <PopupWithForm 
-        name="add-place" 
-        title="Новое место" 
-        submitBtnText="Создать"
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-      >
-        <label className="popup__field">
-          <input 
-            className="popup__input popup__input_type_name-place" 
-            name="namePlace" 
-            placeholder="Как называется это место?" 
-            type="text" 
-            minLength={2} 
-            maxLength={30} 
-            required 
-          />
-          <span className="popup__error" />
-        </label>
-        <label className="popup__field">
-          <input 
-            className="popup__input popup__input_type_url" 
-            name="urlImage" 
-            placeholder="Укажите ссылку на изображение" 
-            type="url" 
-            required 
-          />
-          <span className="popup__error" />
-        </label>
-      </PopupWithForm>
-      <PopupWithForm 
-        name="confirm-delete" 
-        title="Вы уверены?" 
-        submitBtnText="Да"
-      >
-      </PopupWithForm>
-      <PopupWithForm 
-        name="edit-avatar" 
-        title="Обновить аватар" 
-        submitBtnText="Сохранить"
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-      >
-        <label className="popup__field">
-          <input 
-            className="popup__input popup__input_type_url" 
-            name="urlImage" 
-            placeholder="Укажите ссылку на новое изображение" 
-            type="url" 
-            required 
-          />
-          <span className="popup__error" />
-        </label>
-      </PopupWithForm>
+      <EditAvatarPopup 
+        isOpen={ isEditAvatarPopupOpen }
+        onClose={ closeAllPopups }
+        onUpdateAvatar={ handleUpdateAvatar }
+      />
+      <AddPlacePopup
+        isOpen={ isAddPlacePopupOpen }
+        onClose={ closeAllPopups }
+        onAddPlace={ handleAddPlaceSubmit }
+        cards={ cards }
+      />
+      <ConfirmDeletePopup />
       { selectedCard && <ImagePopup 
         card={selectedCard}
         onClose={closeAllPopups}
         isOpen={isImgFullPopupOpen}
       />}
+      
     </CurrentUserContext.Provider>
   );
 }

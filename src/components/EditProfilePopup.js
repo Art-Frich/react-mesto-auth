@@ -24,8 +24,9 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
   }
 
   React.useEffect( () => {
-    setName( currentUser.name );
-    setDescription( currentUser.about );
+    // || "" - чтобы в состоянии, пока не получены данные о пользователе, React не переживал о некотролируемых input
+    setName( currentUser.name || "" );
+    setDescription( currentUser.about || "" );
   }, [ currentUser ]);
 
   return (
