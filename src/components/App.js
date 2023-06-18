@@ -15,6 +15,7 @@ export default function App() {
   const [ selectedCard, setSelectedCard ] = React.useState( null );
   const [ cards, setCards ] = React.useState([]);
   const [ idCardOnDelete, setIdCardOnDelete ] = React.useState( null );
+  const [ fetchCondition, setFetchConditon ] = React.useState( false );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
@@ -49,35 +50,45 @@ export default function App() {
 
   function handleCardLike( dataCard ){
     const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
-    api.changeLikeCardStatus( dataCard._id, isLiked ).then( newCard => {
-      setCards( state => state.map( c => c._id === dataCard._id ? newCard : c));
-    });
+    handleFinalFetch(
+      api.changeLikeCardStatus( dataCard._id, isLiked ).then( newCard => {
+        setCards( state => state.map( c => c._id === dataCard._id ? newCard : c));
+      })
+    )
   }
 
   function handleUpdateUser( newUserData ){
-    return api.updateUserData( newUserData.name, newUserData.about )
+    setFetchConditon( true );
+    handleFinalFetch(
+      api.updateUserData( newUserData.name, newUserData.about )
       .then( (res) => setCurrentUser( res ))
-      .then( () => closeAllPopups());
+    )
   }
 
   function handleUpdateAvatar( newUserAvatar ){
-    return api.updateAvatar( newUserAvatar.avatar )
+    setFetchConditon( true );
+    handleFinalFetch(
+      api.updateAvatar( newUserAvatar.avatar )
       .then( (res) => setCurrentUser( res ))
-      .then( () => closeAllPopups());
+    )
   }
 
   function handleAddPlaceSubmit( newCardData ){
-    return api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
+    setFetchConditon( true );
+    handleFinalFetch(
+      api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
       .then( (newCard) => setCards( [newCard, ...cards] ))
-      .then( () => closeAllPopups() );
+    )
   }
 
   function handleConfirmDelete(){
-    return api.deleteCard( idCardOnDelete )
-      .then( () => {
-        setCards( () => cards.filter( card => card._id !== idCardOnDelete ))
+    setFetchConditon( true );
+    handleFinalFetch(
+      api.deleteCard( idCardOnDelete )
+        .then( () => {
+          setCards( () => cards.filter( card => card._id !== idCardOnDelete ))
       })
-      .then( () => closeAllPopups() );
+    )
   }
 
   function closeAllPopups(){
@@ -89,17 +100,31 @@ export default function App() {
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
+  function handleFinalFetch( promise ){
+    return promise
+      .then( () => closeAllPopups() )
+      .catch( ( err ) =>  handleRejectMessage() )
+      .finally( () => setFetchConditon( false ));
+  }
+
+  function handleRejectMessage( err ){
+    alert( 'Капитан, с прискорбием сообщаю: ' + 
+      (err || 'что-то пошло не так. Возможно мы попали на мель и нужно ждать прилива интернета.') 
+    );
+  }
+
   React.useEffect( () => {
-    try {
-      (async () =>{
-      const userData = await api.getUserInfo();
-      setCurrentUser( userData );
-      const dataCard =  await api.getInitialCards();
-      setCards( dataCard );
-      })()
-    } catch( err ) {
-      alert('Ошибка, бро: ' + err);
-    }
+    const getData = async () => {
+      try {
+        const userData = await api.getUserInfo();
+        setCurrentUser( userData );
+        const dataCard =  await api.getInitialCards();
+        setCards( dataCard );
+      } catch( err ) {
+        handleRejectMessage( err );
+      }
+    };
+    getData();
   }, []);
 
   return (
@@ -121,22 +146,26 @@ export default function App() {
         isOpen={ isEditProfilePopupOpen } 
         onClose={ closeAllPopups }
         onUpdateUser={ handleUpdateUser }
+        fetchCondition={ fetchCondition }
       />
       <EditAvatarPopup 
         isOpen={ isEditAvatarPopupOpen }
         onClose={ closeAllPopups }
         onUpdateAvatar={ handleUpdateAvatar }
+        fetchCondition={ fetchCondition }
       />
       <AddPlacePopup
         isOpen={ isAddPlacePopupOpen }
         onClose={ closeAllPopups }
         onAddPlace={ handleAddPlaceSubmit }
         cards={ cards }
+        fetchCondition={ fetchCondition }
       />
       <ConfirmDeletePopup 
         isOpen={ isConfirmDeletePopupOpen }
         onClose={ closeAllPopups }
         onConfirmDelete={ handleConfirmDelete }
+        fetchCondition={ fetchCondition }
       />
       { selectedCard && <ImagePopup 
         card={selectedCard}
