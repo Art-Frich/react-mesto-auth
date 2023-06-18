@@ -1,14 +1,10 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function ConfirmDeletePopup( { isOpen, onClose, onConfirmDelete } ){
-  const [ fetchCondition, setFetchConditon ] = React.useState( false );
-
+export default function ConfirmDeletePopup( { isOpen, onClose, onConfirmDelete, fetchCondition } ){
   function handleSubmit( e ){
     e.preventDefault();
-    setFetchConditon( true );
-    onConfirmDelete()
-      .then( () => setFetchConditon( false ) );
+    onConfirmDelete();
   }
 
   return(

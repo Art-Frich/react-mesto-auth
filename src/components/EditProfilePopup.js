@@ -2,11 +2,10 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
+export default function EditProfilePopup({ isOpen, onClose, onUpdateUser, fetchCondition }){
   const currentUser = React.useContext( CurrentUserContext );
   const [ name, setName ] = React.useState("");
   const [ description, setDescription ] = React.useState("");
-  const [ fetchCondition, setFetchConditon ] = React.useState( false );
   const [ isValidForm, setIsValidForm ] = React.useState( true );
   const [ isValidName, setIsValidName ] = React.useState( true );
   const [ isValidAbout, setIsValidAbout ] = React.useState( true );
@@ -27,12 +26,10 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
 
   function handleSubmit( e ){
     e.preventDefault();
-    setFetchConditon( true );
     onUpdateUser({
       name,
       about: description,
     })
-      .then( () => setFetchConditon( false ))
   }
 
   React.useEffect( () => {

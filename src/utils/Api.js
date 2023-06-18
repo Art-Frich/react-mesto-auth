@@ -31,12 +31,13 @@ class Api {
    * @returns response данных пользователя
    */
   getUserInfo() {
-    return fetch( this._urlServer + this._qUsersMe, {
-      headers: {
-        authorization: this._token
-      }
-    })
-      .then( res => this._handleResponse( res ) )
+    return this._handleFetch(
+      fetch( this._urlServer + this._qUsersMe, {
+        headers: {
+          authorization: this._token
+        }
+      })
+    )
   }
 
   /**
@@ -44,12 +45,13 @@ class Api {
    * @returns response начальных карточек
    */
   getInitialCards() {
-    return fetch( this._urlServer + this._qCards, {
-      headers: {
-        authorization: this._token
-      }
-    })
-     .then( res => this._handleResponse( res ) )
+    return this._handleFetch(
+      fetch( this._urlServer + this._qCards, {
+        headers: {
+          authorization: this._token
+        }
+      })
+    )
   }
 
   /**
@@ -59,18 +61,19 @@ class Api {
    * @returns 
    */
   updateUserData( newName, newAbout ) {
-    return fetch( this._urlServer + this._qUsersMe, {
-      method: 'PATCH',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: newName,
-        about: newAbout
+    return this._handleFetch(
+      fetch( this._urlServer + this._qUsersMe, {
+        method: 'PATCH',
+        headers: {
+          authorization: this._token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: newName,
+          about: newAbout
+        })
       })
-    })
-     .then( res => this._handleResponse( res ) )
+    )
   }
 
   /**
@@ -80,18 +83,19 @@ class Api {
    * @returns response сервера с данными новой карточки
    */
   addNewCard( namePlace, linkImg ) {
-    return fetch( this._urlServer + this._qCards, {
-      method: 'POST',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: namePlace,
-        link: linkImg
+    return this._handleFetch(
+      fetch( this._urlServer + this._qCards, {
+        method: 'POST',
+        headers: {
+          authorization: this._token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: namePlace,
+          link: linkImg
+        })
       })
-    })
-      .then( res => this._handleResponse( res ) )
+    )
   }
 
   /**
@@ -100,13 +104,14 @@ class Api {
    * @returns response сервера об удалении
    */
   deleteCard( id ) {
-    return fetch( this._urlServer + this._qCards + id, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._token,
-      }
-    })
-      .then( res => this._handleResponse( res ) )
+    return this._handleFetch(
+      fetch( this._urlServer + this._qCards + id, {
+        method: 'DELETE',
+        headers: {
+          authorization: this._token,
+        }
+      })
+    )
   }
 
   /**
@@ -115,13 +120,14 @@ class Api {
    * @returns response сервера с обновленными данными карточки (лайков)
    */
   setLike( id ){
-    return fetch( this._urlServer + this._qCards + id + this._qLikes, {
-      method: 'PUT',
-      headers: {
-        authorization: this._token,
-      }
-    })
-     .then( res => this._handleResponse( res ) )
+    return this._handleFetch(
+      fetch( this._urlServer + this._qCards + id + this._qLikes, {
+        method: 'PUT',
+        headers: {
+          authorization: this._token,
+        }
+      })
+    )
   }
 
   /**
@@ -130,13 +136,14 @@ class Api {
   * @returns response сервера с обновленными данными карточки (лайков)
   */
   deleteLike( id ) {
-    return fetch( this._urlServer + this._qCards + id + this._qLikes, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._token,
-      }
-    })
-      .then( res => this._handleResponse( res ) )
+    return this._handleFetch(
+      fetch( this._urlServer + this._qCards + id + this._qLikes, {
+        method: 'DELETE',
+        headers: {
+          authorization: this._token,
+        }
+      })
+    )
   }
 
   changeLikeCardStatus( id, isLiked ){
@@ -151,23 +158,31 @@ class Api {
    * @returns response сервера о смене аватара
    */
   updateAvatar( newAvatarUrl ) {
-    return fetch( this._urlServer + this._qUsersMe + this._qAvatar , {
-      method: 'PATCH',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        avatar: newAvatarUrl
+    return this._handleFetch(
+      fetch( this._urlServer + this._qUsersMe + this._qAvatar , {
+        method: 'PATCH',
+        headers: {
+          authorization: this._token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          avatar: newAvatarUrl
+        })
       })
-    })
-     .then( res => this._handleResponse( res ) )
+    )
   }
 
-  _handleResponse( res ){
-    return !res.ok
-      ? Promise.reject( res.status )
-      : res.json();
+  _handleFetch( fetch ){
+    return fetch
+      .then( res => {
+        return !res.ok
+        ? Promise.reject( res.status )
+        : res.json();
+      })
+      .catch( err => {
+        alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: " + err );
+        return Promise.reject();
+      })
   }
 }
 

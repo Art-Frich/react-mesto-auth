@@ -1,22 +1,16 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }){
+export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, fetchCondition }){
   const avatarRef = React.useRef();
-  const currentUser = React.useContext( CurrentUserContext )
-  const [ fetchCondition, setFetchConditon ] = React.useState( false );
   const [ isValidForm, setIsValidForm ] = React.useState( false );
   const [ isValidUrl, setIsValidUrl ] = React.useState( true );
 
   function handleSubmit( e ){
     e.preventDefault();
-    setFetchConditon( true );
     onUpdateAvatar({
       avatar: avatarRef.current.value
     })
-      .then( () => setFetchConditon( false ))
-      .then( () => setIsValidForm( false ));
   }
 
   function inputChange(e){
@@ -26,14 +20,16 @@ export default function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }){
 
   React.useEffect( () => {
     avatarRef.current.value = "";
-  }, [currentUser])
+    setIsValidForm( avatarRef.current.validity.valid );
+    setIsValidUrl( true )
+  }, [ isOpen ])
 
   return(
     <PopupWithForm 
       name="edit-avatar" 
       title="Обновить аватар" 
       submitBtnText="Сохранить"
-      submitBtnTextFetchCondition="Я тебя вижу..."
+      submitBtnTextFetchCondition="Ага... Увидел..."
       fetchCondition={ fetchCondition }
       isOpen={ isOpen }
       onClose={ onClose }

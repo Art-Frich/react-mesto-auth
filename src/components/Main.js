@@ -53,14 +53,18 @@ export default function Main({
       <section className="cards">
         <ul className="cards__grid">
           { cards.map( (item) => (
-            <li className="cards__grid-item" key={ item._id }>
-              <Card 
-                dataCard={item} 
-                onCardClick={onCardClick} 
-                onCardLike={onCardLike}
-                onCardDelete={onCardDelete}
-              />
-            </li>)) 
+            item 
+            ?
+              <li className="cards__grid-item" key={ item._id }>
+                <Card 
+                  dataCard={item} 
+                  onCardClick={onCardClick} 
+                  onCardLike={onCardLike}
+                  onCardDelete={onCardDelete}
+                />
+              </li>
+            : 
+              <></>)) 
           }
         </ul>
       </section>

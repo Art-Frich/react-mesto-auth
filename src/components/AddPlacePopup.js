@@ -1,8 +1,7 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards }){
-  const [ fetchCondition, setFetchConditon ] = React.useState( false );
+export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards, fetchCondition }){
   const [ isValidForm, setIsValidForm ] = React.useState( false );
   const [ isValidName, setIsValidName ] = React.useState( true );
   const [ isValidUrl, setIsValidUrl ] = React.useState( true );
@@ -11,13 +10,10 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards }){
 
   function handleSubmit( e ){
     e.preventDefault();
-    setFetchConditon( true );
     onAddPlace( {
       namePlace: namePlaceRef.current.value,
       urlPlace: urlPlaceRef.current.value
     })
-      .then( () => setFetchConditon( false ))
-      .then( () => setIsValidForm( false ));
   }
 
   function checkFormValidity(){
@@ -43,6 +39,10 @@ export default function AddPlacePopup({ isOpen, onClose, onAddPlace, cards }){
     namePlaceRef.current.value = "";
     urlPlaceRef.current.value = "";
   }, [ cards ]);
+
+  React.useEffect( () => {
+    checkFormValidity();
+  }, [ isOpen ]);
 
   return(
     <PopupWithForm 
