@@ -7,13 +7,22 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
   const [ name, setName ] = React.useState("");
   const [ description, setDescription ] = React.useState("");
   const [ fetchCondition, setFetchConditon ] = React.useState( false );
+  const [ isValidForm, setIsValidForm ] = React.useState( true );
+  const [ isValidName, setIsValidName ] = React.useState( true );
+  const [ isValidAbout, setIsValidAbout ] = React.useState( true );
+  const [ nameValidationMessage, setNameValidationMessage ] = React.useState("");
+  const [ aboutValidationMessage, setAboutValidationMessage ] = React.useState("");
 
   function handleChangeName( e ){
     setName( e.target.value );
+    setIsValidName( e.target.validity.valid );
+    setNameValidationMessage( e.target.validationMessage );
   }
 
   function handleChangeAbout( e ){
     setDescription( e.target.value );
+    setIsValidAbout( e.target.validity.valid );
+    setAboutValidationMessage( e.target.validationMessage );
   }
 
   function handleSubmit( e ){
@@ -22,14 +31,26 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
     onUpdateUser({
       name,
       about: description,
-    }).then( () => setFetchConditon( false ) );
+    })
+      .then( () => setFetchConditon( false ))
   }
 
   React.useEffect( () => {
     // || "" - чтобы в состоянии, пока не получены данные о пользователе, React не переживал о некотролируемых input
     setName( currentUser.name || "" );
     setDescription( currentUser.about || "" );
-  }, [ currentUser ]);
+    setIsValidAbout( true );
+    setIsValidName( true );
+  }, [ currentUser, isOpen ]);
+
+  React.useEffect( () => {
+    setIsValidForm( 
+      isValidAbout &&
+      isValidName &&
+      name &&
+      description
+    );
+  }, [isValidAbout, isValidName, name, description]);
 
   return (
     <PopupWithForm 
@@ -41,10 +62,11 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
       isOpen={ isOpen }
       onClose={ onClose }
       onSubmit={ handleSubmit }
+      isValidForm={ isValidForm }
     >
       <label className="popup__field">
         <input 
-          className="popup__input popup__input_type_name-user" 
+          className={`popup__input popup__input_type_name-user ${ !isValidName ? 'popup__input_type_error' : '' }`}
           name="nameUser" 
           placeholder="Имя или то, что вам его заменит" 
           type="text" 
@@ -54,11 +76,11 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
           onChange={ handleChangeName }
           value={ name }
         />
-        <span className="popup__error" />
+        <span className="popup__error">{ !isValidName ? nameValidationMessage : '' }</span>
       </label>
       <label className="popup__field">
         <input 
-          className="popup__input popup__input_type_about" 
+          className={`popup__input popup__input_type_about ${ !isValidAbout ? 'popup__input_type_error' : '' }`}
           name="aboutUser" 
           placeholder="Кто вы? Можете оставить это место пустым =)" 
           type="text" 
@@ -68,7 +90,7 @@ export default function EditProfilePopup({ isOpen, onClose, onUpdateUser }){
           onChange={ handleChangeAbout }
           value={ description }
         />
-        <span className="popup__error" />
+        <span className="popup__error">{ !isValidAbout ? aboutValidationMessage: '' }</span>
       </label>
     </PopupWithForm>
   )

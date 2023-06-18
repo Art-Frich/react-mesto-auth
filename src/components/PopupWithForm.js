@@ -1,5 +1,6 @@
 export default function PopupWithForm(
-  { title, name, submitBtnText, submitBtnTextFetchCondition, isOpen, onClose, onSubmit, children, fetchCondition }
+  { title, name, submitBtnText, submitBtnTextFetchCondition, isOpen, 
+    onClose, onSubmit, children, fetchCondition, isValidForm = true }
   ){
 
   return(
@@ -21,6 +22,7 @@ export default function PopupWithForm(
             className="popup__btn-submit button-zeroing transition-opacity" 
             type="submit" 
             name={`submit-btn-${ name }`}
+            disabled={ isValidForm ? null : 'disabled' }
           >
             { fetchCondition ? submitBtnTextFetchCondition : submitBtnText }
           </button>
