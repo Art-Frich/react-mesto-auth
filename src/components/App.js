@@ -1,4 +1,6 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -7,6 +9,10 @@ import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import ConfirmDeletePopup from './ConfirmDeletePopup.js';
+import Login from './Login.js';
+import Register from './Register.js';
+import InfoTooltip from './InfoTooltip.js';
+import ProtectedRoute from './ProtectedRoute.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
@@ -21,6 +27,7 @@ export default function App() {
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
   const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
   const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = React.useState( false );
+  const [ loggedIn, setLoggedIn ] = React.useState( false );
   // нужен для transition + "предзагрузка"
   const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
 
@@ -131,15 +138,22 @@ export default function App() {
     <CurrentUserContext.Provider value={currentUser}>
 
       <Header />
-      <Main 
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onEditAvatar={handleEditAvatarClick}
-        onCardClick={handleCardClick}
-        onCardLike={handleCardLike}
-        onCardDelete={handleCardDelete}
-        cards={cards}
-      />
+      <Routes>
+        <Route path='/sign-up' element={ <Login /> } />
+        <Route path='/sign-in' element={ <Register /> } />
+        <Route path='/' element={<ProtectedRoute element={
+            <Main 
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+              cards={cards}
+            />
+          } loggedIn={ loggedIn } />
+        } />
+      </Routes>
       <Footer />
 
       <EditProfilePopup 
