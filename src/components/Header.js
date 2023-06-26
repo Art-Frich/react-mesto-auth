@@ -1,7 +1,6 @@
 import logo from "../images/logo.svg";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { api } from "../utils/Api";
 
 export default function Header({ email }){
   const curUrl = useLocation();
@@ -14,8 +13,12 @@ export default function Header({ email }){
     color: "#fff",
     display: "flex",
     flexDirection: "row",
-    gap: "24px"
+    gap: "24px",
+    fontSize: "18px",
+    fontWeight: 500,
+    lineHeight: "22px"
   };
+  
 
   return(
     <header className="header">

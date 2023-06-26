@@ -119,10 +119,10 @@ export default function App() {
     api.loginUser( email, password )
       .then( (res) => {
         setLoggedIn( true );
-        setEmail( res.data.email );
+        setEmail( email );
         navigate('/');
       })
-      .catch( () => alert('Не удалось авторизоваться на сервере.'))
+      .catch( () => alert('Не удалось авторизоваться на сервере или изменить данные после запроса.'))
       .finally( () => {
         setFetchConditon( false )
       })
@@ -171,7 +171,6 @@ export default function App() {
         navigate('/');
       })
       .catch( () => console.log('Не удалось авторизоваться на сервере.'));
-
   }, []);
 
   return (
