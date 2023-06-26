@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 import Header from './Header.js';
 import Main from './Main.js';
@@ -11,7 +11,6 @@ import AddPlacePopup from './popups/AddPlacePopup.js';
 import ConfirmDeletePopup from './popups/ConfirmDeletePopup.js';
 import Login from './Login.js';
 import Register from './Register.js';
-import InfoTooltip from './popups/InfoTooltip.js';
 import ProtectedRoute from './ProtectedRoute.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
@@ -27,9 +26,14 @@ export default function App() {
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
   const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
   const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = React.useState( false );
+  const [ isRegistrationPopupOpen, setIsRegistrationPopupOpen ] = React.useState( false );
+
+  const [ isRegister, setIsRegister ] = React.useState( false );
   const [ loggedIn, setLoggedIn ] = React.useState( false );
   // нужен для transition + "предзагрузка"
   const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
+
+  const navigate = useNavigate();
 
   function handleEditAvatarClick(){
     setIsEditAvatarPopupOpen( true );
@@ -98,19 +102,44 @@ export default function App() {
     )
   }
 
+  function onRegister( email, password ){
+    setFetchConditon( true );
+    api.createUser( email, password )
+      .then( () => setIsRegister( true ))
+      .catch( () => setIsRegister( false ))
+      .finally( () => {
+        setIsRegistrationPopupOpen( true )
+        setFetchConditon( false )
+      })
+  }
+
+  function onLogin( email, password ){
+    setFetchConditon( true );
+    api.loginUser( email, password )
+      .then( () => {
+        setLoggedIn( true );
+        navigate('/');
+      })
+      .catch( () => alert('Не удалось авторизоваться на сервере.'))
+      .finally( () => {
+        setFetchConditon( false )
+      })
+  }
+
   function closeAllPopups(){
     setIsEditAvatarPopupOpen( false );
     setIsEditProfilePopupOpen( false );
     setIsAddPlacePopupOpen( false );
     setIsImgFullPopupOpen( false );
     setIsConfirmDeletePopupOpen( false );
+    setIsRegistrationPopupOpen( false );
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
   function handleFinalFetch( promise ){
     return promise
       .then( () => closeAllPopups() )
-      .catch( ( err ) =>  handleRejectMessage() )
+      .catch( ( err ) => handleRejectMessage() )
       .finally( () => setFetchConditon( false ));
   }
 
@@ -120,18 +149,26 @@ export default function App() {
     );
   }
 
+  const getData = async () => {
+    try {
+      const userData = await api.getUserInfo();
+      setCurrentUser( userData );
+      const dataCard =  await api.getInitialCards();
+      setCards( dataCard );
+    } catch( err ) {
+      handleRejectMessage( err );
+    }
+  };
+
   React.useEffect( () => {
-    const getData = async () => {
-      try {
-        const userData = await api.getUserInfo();
-        setCurrentUser( userData );
-        const dataCard =  await api.getInitialCards();
-        setCards( dataCard );
-      } catch( err ) {
-        handleRejectMessage( err );
-      }
-    };
-    api.checkJWT().then( () => getData() ).catch( () => console.log('Не удалось авторизоваться на сервере.'));
+    getData();
+    api.checkJWT()
+      .then( () => setLoggedIn( true ))
+      .then( () => {
+        navigate('/')
+      })
+      .catch( () => console.log('Не удалось авторизоваться на сервере.'));
+
   }, []);
 
   return (
@@ -139,19 +176,30 @@ export default function App() {
 
       <Header />
       <Routes>
-        <Route path='/sign-in' element={ <Login /> } />
-        <Route path='/sign-up' element={ <Register /> } />
-        <Route path='/' element={<ProtectedRoute element={
-            <Main 
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              cards={cards}
-            />
-          } loggedIn={ loggedIn } />
+        <Route path='/sign-in' element={ 
+          <Login 
+            onSubmit={ onLogin }
+            fetchCondition={ fetchCondition }
+          /> 
+        } />
+        <Route path='/sign-up' element={ 
+          <Register 
+            onSubmit={ onRegister }
+            isOpen={ isRegistrationPopupOpen }
+            onClose={ closeAllPopups }
+            isRegister={ isRegister }
+            fetchCondition={ fetchCondition }
+          /> 
+        } />
+        <Route path='/' element={<ProtectedRoute element={ Main }
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
+          cards={cards}
+          loggedIn={ loggedIn } />
         } />
         <Route path='*' element={ <Navigate to='/sign-in' /> } />
       </Routes>

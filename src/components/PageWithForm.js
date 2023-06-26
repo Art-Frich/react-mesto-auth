@@ -1,9 +1,11 @@
 import React from "react";
 
 export default function PageWithForm({
-  textTitle, textBtnSbt, onSubmit, name, children
+  textTitle, textBtnSbt, onSubmit, name, children, fetchCondition
 }){
-  const [ isValidForm, setIsValidForm ] = React.useState( true );
+  // const [ isValidForm, setIsValidForm ] = React.useState( true );
+  const emailRef = React.useRef();
+  const passwordRef = React.useRef();
 
   return (
     <div 
@@ -13,7 +15,7 @@ export default function PageWithForm({
         className="page-auth__form" 
         name={`${ name }`} 
         noValidate
-        onSubmit={ onSubmit }
+        onSubmit={ (e) => onSubmit( e, emailRef.current.value, passwordRef.current.value ) }
       >
 
         <h2 className="page-auth__title">{ textTitle }</h2>
@@ -25,6 +27,7 @@ export default function PageWithForm({
             placeholder="Email" 
             type="email"
             required
+            ref={ emailRef }
           />
           <span className="page-auth__error"></span>
         </label>
@@ -36,6 +39,7 @@ export default function PageWithForm({
             placeholder="Пароль" 
             type="password" 
             required
+            ref={ passwordRef }
           />
           <span className="page-auth__error"></span>
         </label>
@@ -46,7 +50,7 @@ export default function PageWithForm({
           name={`submit-btn-${ name }`}
           disabled={ isValidForm ? null : 'disabled' }
         >
-          { textBtnSbt }
+          { fetchCondition ? 'Попробуем-ка...' : textBtnSbt }
         </button>
 
         {children}
