@@ -3,7 +3,7 @@ import React from "react";
 export default function PageWithForm({
   textTitle, textBtnSbt, onSubmit, name, children, fetchCondition
 }){
-  // const [ isValidForm, setIsValidForm ] = React.useState( true );
+  const [ isValidForm, setIsValidForm ] = React.useState( true );
   const emailRef = React.useRef();
   const passwordRef = React.useRef();
 
