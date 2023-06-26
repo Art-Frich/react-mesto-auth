@@ -7,9 +7,13 @@
 @import url(../blocks/body/body.css);
 @import url(../blocks/root/root.css);
 
+/* шапка */
 @import url(../blocks/header/header.css);
 @import url(../blocks/header/__logo/header__logo.css);
+@import url(../blocks/header/__nav/header__nav.css);
+@import url(../blocks/header/__link/header__link.css);
 
+/* main */
 @import url(../blocks/main/main.css);
 
 /* блок профиля: 
@@ -63,7 +67,9 @@
 @import url(../blocks/popup/__container/popup__container.css);
 @import url(../blocks/popup/__container/_type/popup__container_type_form.css);
 @import url(../blocks/popup/__container/_type/popup__container_type_figure.css);
+@import url(../blocks/popup/__container/_type/popup__container_type_auth-msg.css);
 @import url(../blocks/popup/__img/popup__img.css);
+@import url(../blocks/popup/__auth-icon/popup__auth-icon.css);
 @import url(../blocks/popup/__figure/popup__figure.css);
 @import url(../blocks/popup/__figcaption/popup__figcaption.css);
 @import url(../blocks/popup/__title/popup__title.css);

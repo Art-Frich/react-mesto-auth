@@ -1,17 +1,17 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
-import ImagePopup from './ImagePopup.js';
-import EditProfilePopup from './EditProfilePopup.js';
-import EditAvatarPopup from './EditAvatarPopup.js';
-import AddPlacePopup from './AddPlacePopup.js';
-import ConfirmDeletePopup from './ConfirmDeletePopup.js';
+import ImagePopup from './popups/ImagePopup.js';
+import EditProfilePopup from './popups/EditProfilePopup.js';
+import EditAvatarPopup from './popups/EditAvatarPopup.js';
+import AddPlacePopup from './popups/AddPlacePopup.js';
+import ConfirmDeletePopup from './popups/ConfirmDeletePopup.js';
 import Login from './Login.js';
 import Register from './Register.js';
-import InfoTooltip from './InfoTooltip.js';
+import InfoTooltip from './popups/InfoTooltip.js';
 import ProtectedRoute from './ProtectedRoute.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
@@ -131,7 +131,7 @@ export default function App() {
         handleRejectMessage( err );
       }
     };
-    getData();
+    api.checkJWT().then( () => getData() ).catch( () => console.log('Не удалось авторизоваться на сервере.'));
   }, []);
 
   return (
@@ -139,8 +139,8 @@ export default function App() {
 
       <Header />
       <Routes>
-        <Route path='/sign-up' element={ <Login /> } />
-        <Route path='/sign-in' element={ <Register /> } />
+        <Route path='/sign-in' element={ <Login /> } />
+        <Route path='/sign-up' element={ <Register /> } />
         <Route path='/' element={<ProtectedRoute element={
             <Main 
               onEditProfile={handleEditProfileClick}
@@ -153,6 +153,7 @@ export default function App() {
             />
           } loggedIn={ loggedIn } />
         } />
+        <Route path='*' element={ <Navigate to='/sign-in' /> } />
       </Routes>
       <Footer />
 

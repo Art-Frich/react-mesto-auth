@@ -15,15 +15,21 @@ class Api {
    * @param {string} qAvatar строка для запроса в avatar
    */
   constructor({ 
-    token, myId, urlServer, qUsersMe, qCards, qLikes, qAvatar
+    urlServer, qUsersMe, qCards, qLikes, qAvatar
   }) {
-    this._token = token;
     this._urlServer = urlServer;
-    this._myId = myId;
     this._qUsersMe = qUsersMe;
     this._qCards = qCards;
     this._qLikes = qLikes;
     this._qAvatar = qAvatar;
+
+    this._urlAuthServer = 'https://auth.nomoreparties.co/';
+    this._qLogin = 'signin';
+    this._qRegister = 'signup';
+
+    this._token = localStorage.getItem('jwt');
+    this._myId = '';
+    this._email = 'undefined';
   }
 
   /**
@@ -170,6 +176,98 @@ class Api {
         })
       })
     )
+  }
+
+  createUser( email, password ){
+    return fetch( this._urlAuthServer + this._qRegister, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'password': password,
+          'email': email
+        })
+      }).then( res => {
+        return !res.ok
+        ? Promise.reject( res )
+        : res.json();
+      })
+      .then( res => {
+        this._myId = res._id;;
+        this._email = res._email;
+        return res;
+      })
+      .catch( err => {
+        if ( err.status === 400 ){
+          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: некорректно заполнено одно из полей." );
+        } else { 
+          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: " + err );
+        }
+        return Promise.reject();
+      })
+  }
+
+  
+  loginUser( email, password ){
+    return fetch( this._urlAuthServer + this._qLogin, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'password': password,
+          'email': email
+        })
+      }).then( res => {
+        return !res.ok
+        ? Promise.reject( res )
+        : res.json();
+      })
+      .then( res => {
+        localStorage.setItem('jwt', res.token);
+        this._token = res.token;
+        return res;
+      })
+      .catch( err => {
+        if ( err.status === 400 ){
+          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: не передано одно из полей." );
+        } else if( err.status === 401 ){
+          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: пользователь с email не найден." );
+        } else { 
+          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: " + err );
+        }
+        return Promise.reject();
+      })
+  }
+
+  checkJWT(){
+    return fetch( this._urlAuthServer + this._qUsersMe, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ this._token }`
+      }
+    }).then( res => {
+      return !res.ok
+      ? Promise.reject( res )
+      : res.json();
+    })
+    .then( res => {
+      this.email = this.email;
+      this._myId = res._id;
+      return res;
+    })
+    .catch( err => {
+      if ( err.status === 400 ){
+        console.log( "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Вот что мы знаем: Токен не передан или передан не в том формате." );
+      } else if( err.status === 401 ){
+        console.log( "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Вот что мы знаем: Переданный токен некорректен." );
+      } else { 
+        console.log( "Кажется, вы ранее у вас нет в браузере сохраненной сессии с доступом. Вот что мы знаем: " + err );
+      }
+      return Promise.reject();
+    })
   }
 
   _handleFetch( fetch ){
