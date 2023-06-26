@@ -30,7 +30,6 @@ class Api {
 
     this._tokenAuth = localStorage.getItem('jwt');
     this._myId = myId;
-    this._email = 'undefined';
   }
 
   /**
@@ -194,11 +193,6 @@ class Api {
         ? Promise.reject( res )
         : res.json();
       })
-      .then( res => {
-        // this._myId = res._id;;
-        this._email = res._email;
-        return res;
-      })
       .catch( err => {
         if ( err.status === 400 ){
           console.log( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: некорректно заполнено одно из полей." );
@@ -242,10 +236,6 @@ class Api {
       })
   }
 
-  getEmail(){
-    return this._email;
-  }
-
   checkJWT(){
     return fetch( this._urlAuthServer + this._qUsersMe, {
       method: 'GET',
@@ -258,13 +248,7 @@ class Api {
       ? Promise.reject( res )
       : res.json();
     })
-    .then( res => {
-      this._email = res.data.email;
-      // this._myId = res._id;
-      return res;
-    })
     .catch( err => {
-      console.log('pizdets')
       if ( err.status === 400 ){
         console.log( "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Вот что мы знаем: Токен не передан или передан не в том формате." );
       } else if( err.status === 401 ){
