@@ -3,7 +3,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { api } from "../utils/Api";
 
-export default function Header(){
+export default function Header({ email }){
   const curUrl = useLocation();
 
   function onSignOut(){
@@ -25,7 +25,7 @@ export default function Header(){
         { curUrl.pathname === '/sign-up' && <Link className='header__link' to='sign-in'>Войти</Link>}
         { curUrl.pathname === '/' && 
           <div style={divStyle}>
-            {api.getEmail()}
+            { email }
             <Link className="header__link" to='sign-in' onClick={ onSignOut }>Выйти</Link>
           </div>
         }

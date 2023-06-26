@@ -21,6 +21,7 @@ export default function App() {
   const [ cards, setCards ] = React.useState([]);
   const [ idCardOnDelete, setIdCardOnDelete ] = React.useState( null );
   const [ fetchCondition, setFetchConditon ] = React.useState( false );
+  const [ email, setEmail ] = React.useState( '' );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
@@ -116,8 +117,9 @@ export default function App() {
   function onLogin( email, password ){
     setFetchConditon( true );
     api.loginUser( email, password )
-      .then( () => {
+      .then( (res) => {
         setLoggedIn( true );
+        setEmail( res.data.email );
         navigate('/');
       })
       .catch( () => alert('Не удалось авторизоваться на сервере.'))
@@ -163,9 +165,10 @@ export default function App() {
   React.useEffect( () => {
     getData();
     api.checkJWT()
-      .then( () => setLoggedIn( true ))
-      .then( () => {
-        navigate('/')
+      .then( (res) => {
+        setLoggedIn( true );
+        setEmail( res.data.email );
+        navigate('/');
       })
       .catch( () => console.log('Не удалось авторизоваться на сервере.'));
 
@@ -174,7 +177,7 @@ export default function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
 
-      <Header />
+      <Header email={ email } />
       <Routes>
         <Route path='/sign-in' element={ 
           <Login 
