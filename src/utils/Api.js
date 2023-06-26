@@ -15,8 +15,9 @@ class Api {
    * @param {string} qAvatar строка для запроса в avatar
    */
   constructor({ 
-    urlServer, qUsersMe, qCards, qLikes, qAvatar
+    urlServer, qUsersMe, qCards, qLikes, qAvatar, token, myId
   }) {
+    this._token = token;
     this._urlServer = urlServer;
     this._qUsersMe = qUsersMe;
     this._qCards = qCards;
@@ -27,8 +28,8 @@ class Api {
     this._qLogin = 'signin';
     this._qRegister = 'signup';
 
-    this._token = localStorage.getItem('jwt');
-    this._myId = '';
+    this._tokenAuth = localStorage.getItem('jwt');
+    this._myId = myId;
     this._email = 'undefined';
   }
 
@@ -194,15 +195,15 @@ class Api {
         : res.json();
       })
       .then( res => {
-        this._myId = res._id;;
+        // this._myId = res._id;;
         this._email = res._email;
         return res;
       })
       .catch( err => {
         if ( err.status === 400 ){
-          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: некорректно заполнено одно из полей." );
+          console.log( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: некорректно заполнено одно из полей." );
         } else { 
-          alert( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: " + err );
+          console.log( "Палундра! У нас проблемы с запросом к серверу! Вот что мы знаем: " + err );
         }
         return Promise.reject();
       })
@@ -226,7 +227,7 @@ class Api {
       })
       .then( res => {
         localStorage.setItem('jwt', res.token);
-        this._token = res.token;
+        this._tokenAuth = res.token;
         return res;
       })
       .catch( err => {
@@ -241,12 +242,16 @@ class Api {
       })
   }
 
+  getEmail(){
+    return this._email;
+  }
+
   checkJWT(){
     return fetch( this._urlAuthServer + this._qUsersMe, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this._token }`
+        'Authorization': `Bearer ${ this._tokenAuth }`
       }
     }).then( res => {
       return !res.ok
@@ -254,11 +259,12 @@ class Api {
       : res.json();
     })
     .then( res => {
-      this.email = this.email;
-      this._myId = res._id;
+      this._email = res.data.email;
+      // this._myId = res._id;
       return res;
     })
     .catch( err => {
+      console.log('pizdets')
       if ( err.status === 400 ){
         console.log( "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Вот что мы знаем: Токен не передан или передан не в том формате." );
       } else if( err.status === 401 ){
