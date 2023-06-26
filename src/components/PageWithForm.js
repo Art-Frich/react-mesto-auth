@@ -1,60 +1,57 @@
-export default function({ textTitle, textBtnSbt, textLabelBtn='' }){
-  <div 
-    className={`popup popup_type_${ name } ${isOpen ? 'to-visible' : ''}`}
-  >
+import React, { Children } from "react";
+
+export default function PageWithForm({
+  textTitle, textBtnSbt, onSubmit, name, children
+}){
+  const [ isValidForm, setIsValidForm ] = React.useState( true );
+
+  return (
     <div 
-      className="popup__container popup__container_type_form"
+      className="page-auth"
     >
       <form 
-        className="popup__form" 
+        className="page-auth__form" 
         name={`${ name }`} 
         noValidate
         onSubmit={ onSubmit }
       >
-        <h2 className="popup__title">{ title }</h2>
 
-        <label className="popup__field">
+        <h2 className="page-auth__title">{ textTitle }</h2>
+
+        <label className="page-auth__field">
           <input 
-            className={`popup__input popup__input_type_name-place ${ !isValidName ? 'popup__input_type_error' : '' }`}
-            name="namePlace" 
-            placeholder="Как называется это место?" 
-            type="text" 
-            minLength={2} 
-            maxLength={30} 
+            className={`page-auth__input page-auth__input_type_email`}
+            name="user email" 
+            placeholder="Email" 
+            type="email"
             required
-            ref={ namePlaceRef }
-            onChange={ handleChangeName }
           />
-          <span className="popup__error">{ !isValidName ? namePlaceRef.current.validationMessage : '' }</span>
+          <span className="page-auth__error"></span>
         </label>
-        <label className="popup__field">
+
+        <label className="page-auth__field">
           <input 
-            className={`popup__input popup__input_type_url ${ !isValidUrl ? 'popup__input_type_error' : '' }`}
-            name="urlImage" 
-            placeholder="Укажите ссылку на изображение" 
-            type="url" 
+            className={`page-auth__input page-auth__input_type_password`}
+            name="user password" 
+            placeholder="Пароль" 
+            type="password" 
             required
-            ref={ urlPlaceRef }
-            onChange={ handleChangeUrl }
           />
-          <span className="popup__error">{ !isValidUrl ? urlPlaceRef.current.validationMessage : '' }</span>
+          <span className="page-auth__error"></span>
         </label>
 
         <button 
-          className="popup__btn-submit button-zeroing transition-opacity" 
+          className="page-auth__btn-submit button-zeroing" 
           type="submit" 
           name={`submit-btn-${ name }`}
           disabled={ isValidForm ? null : 'disabled' }
         >
-          { fetchCondition ? submitBtnTextFetchCondition : submitBtnText }
+          { textBtnSbt }
         </button>
+
+        {children}
+
       </form>
-      <button 
-        className="popup__btn-close button-zeroing transition-opacity" 
-        type="button" 
-        name={`close-btn-${ name }`}
-        onClick={ onClose }
-      />  
     </div>
-  </div>
+  )
 }

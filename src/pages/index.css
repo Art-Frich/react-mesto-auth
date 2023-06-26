@@ -44,6 +44,19 @@
 @import url(../blocks/footer/footer.css);
 @import url(../blocks/footer/__author/footer__author.css);
 
+/* блок стилей страниц авторизации */
+@import url(../blocks/page-auth/page-auth.css);
+@import url(../blocks/page-auth/__form/page-auth__form.css);
+@import url(../blocks/page-auth/__title/page-auth__title.css);
+@import url(../blocks/page-auth/__field/page-auth__field.css);
+@import url(../blocks/page-auth/__input/page-auth__input.css);
+@import url(../blocks/page-auth/__input/_type/page-auth__input_type_email.css);
+@import url(../blocks/page-auth/__input/_type/page-auth__input_type_password.css);
+@import url(../blocks/page-auth/__error/page-auth__error.css);
+@import url(../blocks/page-auth/__btn-submit/page-auth__btn-submit.css);
+@import url(../blocks/page-auth/__label-btn/page-auth__label-btn.css);
+@import url(../blocks/page-auth/__label-btn-link/page-auth__label-btn-link.css);
+
 /* блок стилей попапов */
 @import url(../blocks/popup/popup.css);
 @import url(../blocks/popup/_type/popup_type_full-img-place.css);
