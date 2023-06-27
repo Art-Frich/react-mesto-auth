@@ -12,6 +12,7 @@ import ConfirmDeletePopup from './popups/ConfirmDeletePopup.js';
 import Login from './Login.js';
 import Register from './Register.js';
 import ProtectedRoute from './ProtectedRoute.js';
+import InfoTooltip from "./popups/InfoTooltip";
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
@@ -60,6 +61,8 @@ export default function App() {
     // пользователь чаще всего увидит сразу загруженную картинку и отрендеренную "за кадром"
   }
 
+  // handleFinalFetch - декоратор, который содержит catch для отлова ошибок
+  // также catch есть в виде декоратора непосредственно внутри api
   function handleCardLike( dataCard ){
     const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
     handleFinalFetch(
@@ -106,11 +109,14 @@ export default function App() {
   function onRegister( email, password ){
     setFetchConditon( true );
     api.createUser( email, password )
-      .then( () => setIsRegister( true ))
+      .then( () => {
+        setIsRegister( true );
+        navigate( '/sign-in');
+      })
       .catch( () => setIsRegister( false ))
       .finally( () => {
-        setIsRegistrationPopupOpen( true )
-        setFetchConditon( false )
+        setIsRegistrationPopupOpen( true );
+        setFetchConditon( false );
       })
   }
 
@@ -126,6 +132,10 @@ export default function App() {
       .finally( () => {
         setFetchConditon( false )
       })
+  }
+
+  function onSignOut(){
+    localStorage.removeItem('jwt');
   }
 
   function closeAllPopups(){
@@ -163,7 +173,6 @@ export default function App() {
   };
 
   React.useEffect( () => {
-    getData();
     api.checkJWT()
       .then( (res) => {
         setLoggedIn( true );
@@ -173,10 +182,16 @@ export default function App() {
       .catch( () => console.log('Не удалось авторизоваться на сервере.'));
   }, []);
 
+  React.useEffect( () => {
+    if ( loggedIn ) {
+      getData();
+    }
+  }, [ loggedIn ] );
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
 
-      <Header email={ email } />
+      <Header email={ email } onSignOut={ onSignOut } />
       <Routes>
         <Route path='/sign-in' element={ 
           <Login 
@@ -231,6 +246,11 @@ export default function App() {
         onClose={ closeAllPopups }
         onConfirmDelete={ handleConfirmDelete }
         fetchCondition={ fetchCondition }
+      />
+      <InfoTooltip 
+        isOpen={ isRegistrationPopupOpen } 
+        onClose={ closeAllPopups } 
+        isRegister={ isRegister }
       />
       { selectedCard && <ImagePopup 
         card={selectedCard}

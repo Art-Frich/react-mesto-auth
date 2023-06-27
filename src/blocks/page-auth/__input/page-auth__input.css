@@ -30,3 +30,13 @@
   line-height: 17px;
   color: #CCC;
 }
+
+.page-auth__input:-webkit-autofill {
+  background: #000;
+  color: #CCC;
+}
+
+.page-auth__input:-moz-autofill {
+  background: #000;
+  color: #CCC;
+}
