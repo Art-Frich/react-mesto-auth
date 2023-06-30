@@ -62,11 +62,11 @@ export default function App() {
     setIsImgFullPopupOpen( true );
   }
 
-  // handleFinalFetch - декоратор, который содержит catch для отлова ошибок
+  // handleFinalThenCatchDecorator - декоратор, который содержит catch для отлова ошибок
   // также catch есть в виде декоратора непосредственно внутри api и называется _handleFetch
   function handleCardLike( dataCard ){
     const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
-    handleFinalFetch(
+    handleFinalThenCatchDecorator(
       api.changeLikeCardStatus( dataCard._id, isLiked )
       .then( newCard => {
         setCards( cards => {
@@ -80,7 +80,7 @@ export default function App() {
 
   function handleUpdateUser( newUserData ){
     setFetchConditon( true );
-    handleFinalFetch(
+    handleFinalThenCatchDecorator(
       api.updateUserData( newUserData.name, newUserData.about )
       .then( (res) => setCurrentUser( res ))
     )
@@ -88,7 +88,7 @@ export default function App() {
 
   function handleUpdateAvatar( newUserAvatar ){
     setFetchConditon( true );
-    handleFinalFetch(
+    handleFinalThenCatchDecorator(
       api.updateAvatar( newUserAvatar.avatar )
       .then( (res) => setCurrentUser( res ))
     )
@@ -96,7 +96,7 @@ export default function App() {
 
   function handleAddPlaceSubmit( newCardData ){
     setFetchConditon( true );
-    handleFinalFetch(
+    handleFinalThenCatchDecorator(
       api.addNewCard( newCardData.namePlace, newCardData.urlPlace )
       .then( (newCard) => setCards( [newCard, ...cards] ))
     )
@@ -104,7 +104,7 @@ export default function App() {
 
   function handleConfirmDelete(){
     setFetchConditon( true );
-    handleFinalFetch(
+    handleFinalThenCatchDecorator(
       api.deleteCard( idCardOnDelete )
         .then( () => {
           setCards( () => cards.filter( card => card._id !== idCardOnDelete ))
@@ -163,10 +163,10 @@ export default function App() {
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
-  function handleFinalFetch( promise ){
+  function handleFinalThenCatchDecorator( promise ){
     return promise
       .then( () => closeAllPopups() )
-      .catch( ( err ) => handleRejectMessage() )
+      .catch( ( err ) => handleRejectMessage( err ) )
       .finally( () => setFetchConditon( false ));
   }
 
