@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
 import Header from './Header.js';
@@ -17,24 +17,25 @@ import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 export default function App() {
-  const [ currentUser, setCurrentUser ] = React.useState( {} );
-  const [ selectedCard, setSelectedCard ] = React.useState( null );
-  const [ cards, setCards ] = React.useState([]);
-  const [ idCardOnDelete, setIdCardOnDelete ] = React.useState( null );
-  const [ fetchCondition, setFetchConditon ] = React.useState( false );
-  const [ email, setEmail ] = React.useState( '' );
-  const [ textInfo, setTextInfo ] = React.useState( 'Текста ошибки пока нет' );
+  const [ currentUser, setCurrentUser ] = useState( {} );
+  const [ selectedCard, setSelectedCard ] = useState( null );
+  const [ cards, setCards ] = useState([]);
+  const [ idCardOnDelete, setIdCardOnDelete ] = useState( null );
+  const [ fetchCondition, setFetchConditon ] = useState( false );
+  const [ email, setEmail ] = useState( '' );
+  const [ textInfo, setTextInfo ] = useState( 'Текста ошибки пока нет' );
+  const [ isError, setIsError ] = useState( true );
 
-  const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
-  const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
-  const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
-  const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = React.useState( false );
-  const [ isInfoToolTipOpen, setisInfoToolTipOpen ] = React.useState( false );
+  const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = useState( false );
+  const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = useState( false );
+  const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = useState( false );
+  const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = useState( false );
+  const [ isInfoToolTipOpen, setIsInfoToolTipOpen ] = useState( false );
 
-  const [ isRegister, setIsRegister ] = React.useState( false );
-  const [ loggedIn, setLoggedIn ] = React.useState( false );
+  const [ isRegister, setIsRegister ] = useState( false );
+  const [ loggedIn, setLoggedIn ] = useState( false );
   // нужен для transition + "предзагрузка"
-  const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
+  const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = useState( false ); 
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -116,10 +117,16 @@ export default function App() {
     api.createUser( email, password )
       .then( () => {
         setIsRegister( true );
+        setTextInfo( 'Вы успешно зарегистрировались!' );
+        setIsError( false );
       })
-      .catch( () => setIsRegister( false ))
+      .catch( () => {
+        setIsRegister( false );
+        setTextInfo( 'Что-то пошло не так! Попробуйте ещё раз.' );
+        setIsError( true );
+      })
       .finally( () => {
-        setisInfoToolTipOpen( true );
+        setIsInfoToolTipOpen( true );
         setFetchConditon( false );
       })
   }
@@ -132,7 +139,11 @@ export default function App() {
         setEmail( email );
         navigate('/');
       })
-      .catch( () => alert('Не удалось авторизоваться на сервере или изменить данные после запроса.'))
+      .catch( () => {
+        setTextInfo('Не удалось авторизоваться на сервере или изменить данные после запроса.');
+        setIsError( true );
+        setIsInfoToolTipOpen( true );
+      })
       .finally( () => {
         setFetchConditon( false )
       })
@@ -148,7 +159,7 @@ export default function App() {
     setIsAddPlacePopupOpen( false );
     setIsImgFullPopupOpen( false );
     setIsConfirmDeletePopupOpen( false );
-    setisInfoToolTipOpen( false );
+    setIsInfoToolTipOpen( false );
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
@@ -160,9 +171,11 @@ export default function App() {
   }
 
   function handleRejectMessage( err ){
-    alert( 'Капитан, с прискорбием сообщаю: ' + 
+    setIsError( true );
+    setTextInfo( 'Капитан, с прискорбием сообщаю: ' + 
       (err || 'что-то пошло не так. Возможно мы попали на мель и нужно ждать прилива интернета.') 
     );
+    setIsInfoToolTipOpen( true );
   }
 
   const getData = async () => {
@@ -266,7 +279,7 @@ export default function App() {
       <InfoTooltip 
         isOpen={ isInfoToolTipOpen } 
         onClose={ closeAllPopups } 
-        isError={ isRegister }
+        isError={ isError }
         text={ textInfo }
       />
       <ImagePopup 
