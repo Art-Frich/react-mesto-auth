@@ -29,3 +29,7 @@
 * код разделён на модули;
 * webpack сборщик (под капотом у React);
 * работа с api-сервера ч\з fetch синтаксис;
+
+
+### Надо бы починить
+* gh-pages по руководству https://github.com/rafgraph/spa-github-pages в связке с https://create-react-app.dev/docs/deployment/
