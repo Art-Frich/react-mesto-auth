@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
 import Header from './Header.js';
 import Main from './Main.js';
@@ -23,18 +23,20 @@ export default function App() {
   const [ idCardOnDelete, setIdCardOnDelete ] = React.useState( null );
   const [ fetchCondition, setFetchConditon ] = React.useState( false );
   const [ email, setEmail ] = React.useState( '' );
+  const [ textInfo, setTextInfo ] = React.useState( 'Текста ошибки пока нет' );
 
   const [ isEditProfilePopupOpen, setIsEditProfilePopupOpen ] = React.useState( false );
   const [ isAddPlacePopupOpen, setIsAddPlacePopupOpen ] = React.useState( false );
   const [ isEditAvatarPopupOpen, setIsEditAvatarPopupOpen ] = React.useState( false );
   const [ isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen ] = React.useState( false );
-  const [ isRegistrationPopupOpen, setIsRegistrationPopupOpen ] = React.useState( false );
+  const [ isInfoToolTipOpen, setisInfoToolTipOpen ] = React.useState( false );
 
   const [ isRegister, setIsRegister ] = React.useState( false );
   const [ loggedIn, setLoggedIn ] = React.useState( false );
   // нужен для transition + "предзагрузка"
   const [ isImgFullPopupOpen, setIsImgFullPopupOpen ] = React.useState( false ); 
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   function handleEditAvatarClick(){
@@ -56,18 +58,21 @@ export default function App() {
 
   function handleCardClick( dataCard ){
     setSelectedCard( dataCard );
-    setTimeout( () => setIsImgFullPopupOpen( true ), 300 ); //немного времени на предзагрузку
-    // немного замедляет время отклика, но зато нет "скачков" с картинкой, когда она прогружается
-    // пользователь чаще всего увидит сразу загруженную картинку и отрендеренную "за кадром"
+    setIsImgFullPopupOpen( true );
   }
 
   // handleFinalFetch - декоратор, который содержит catch для отлова ошибок
-  // также catch есть в виде декоратора непосредственно внутри api
+  // также catch есть в виде декоратора непосредственно внутри api и называется _handleFetch
   function handleCardLike( dataCard ){
     const isLiked = dataCard.likes.some( i => i._id === currentUser._id );
     handleFinalFetch(
-      api.changeLikeCardStatus( dataCard._id, isLiked ).then( newCard => {
-        setCards( state => state.map( c => c._id === dataCard._id ? newCard : c));
+      api.changeLikeCardStatus( dataCard._id, isLiked )
+      .then( newCard => {
+        setCards( cards => {
+          return cards.map( oldCard => {
+            return oldCard._id === newCard._id ? newCard : oldCard
+          })
+        })
       })
     )
   }
@@ -111,11 +116,10 @@ export default function App() {
     api.createUser( email, password )
       .then( () => {
         setIsRegister( true );
-        navigate( '/sign-in');
       })
       .catch( () => setIsRegister( false ))
       .finally( () => {
-        setIsRegistrationPopupOpen( true );
+        setisInfoToolTipOpen( true );
         setFetchConditon( false );
       })
   }
@@ -144,7 +148,7 @@ export default function App() {
     setIsAddPlacePopupOpen( false );
     setIsImgFullPopupOpen( false );
     setIsConfirmDeletePopupOpen( false );
-    setIsRegistrationPopupOpen( false );
+    setisInfoToolTipOpen( false );
     setTimeout( () => setSelectedCard( null ), 150 ); //не удалять данные, пока закрывается
   }
 
@@ -180,13 +184,25 @@ export default function App() {
         navigate('/');
       })
       .catch( () => console.log('Не удалось авторизоваться на сервере.'));
+      // eslint-disable-next-line
   }, []);
 
   React.useEffect( () => {
     if ( loggedIn ) {
       getData();
     }
+    // eslint-disable-next-line
   }, [ loggedIn ] );
+
+  React.useEffect(() => {
+    if ( isInfoToolTipOpen === false && 
+         isRegister === true && 
+         location.pathname === '/sign-up') {
+      navigate( '/sign-in');
+      setIsRegister( false );
+    }
+    // eslint-disable-next-line
+  }, [isInfoToolTipOpen] );
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -202,7 +218,7 @@ export default function App() {
         <Route path='/sign-up' element={ 
           <Register 
             onSubmit={ onRegister }
-            isOpen={ isRegistrationPopupOpen }
+            isOpen={ isInfoToolTipOpen }
             onClose={ closeAllPopups }
             isRegister={ isRegister }
             fetchCondition={ fetchCondition }
@@ -248,15 +264,16 @@ export default function App() {
         fetchCondition={ fetchCondition }
       />
       <InfoTooltip 
-        isOpen={ isRegistrationPopupOpen } 
+        isOpen={ isInfoToolTipOpen } 
         onClose={ closeAllPopups } 
-        isRegister={ isRegister }
+        isError={ isRegister }
+        text={ textInfo }
       />
-      { selectedCard && <ImagePopup 
+      <ImagePopup 
         card={selectedCard}
         onClose={ closeAllPopups }
         isOpen={isImgFullPopupOpen}
-      />}
+      />
 
     </CurrentUserContext.Provider>
   );

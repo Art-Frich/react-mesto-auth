@@ -9,15 +9,15 @@ export default function Header({ email, onSignOut }){
       <div className="header__nav">
         <Routes>
           <Route path="/sign-in" element={ 
-            <Link className='header__link' to='sign-up'>Зарегистрироваться</Link> 
+            <Link className='header__link' to='/sign-up'>Зарегистрироваться</Link> 
           }/>
           <Route path="/sign-up" element={
-            <Link className='header__link' to='sign-in'>Войти</Link>
+            <Link className='header__link' to='/sign-in'>Войти</Link>
           }/>
           <Route path="/" element={
             <>
               {email}
-              <Link className="header__link" to='sign-in' onClick={ onSignOut }>Выйти</Link>
+              <Link className="header__link" to='/sign-in' onClick={ onSignOut }>Выйти</Link>
             </>
           }/>
         </Routes>

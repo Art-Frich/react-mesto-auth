@@ -2,7 +2,7 @@ import failedIcon from "../../images/icon-failed-auth.svg";
 import successfullIcon from "../../images/icon-successful-auth.svg";
 
 export default function InfoTooltip({
-  isOpen, isRegister, onClose
+  isOpen, isError, onClose, text
 }){
   return(
     <div 
@@ -11,8 +11,8 @@ export default function InfoTooltip({
       <div 
         className="popup__container popup_container_type_auth-msg"
       >
-        <img className="popup__auth-icon" src={ isRegister ? successfullIcon : failedIcon } />
-        <h2 className="popup__title">{ isRegister ? 'Вы успешно зарегистрировались!' : "Что-то пошло не так! Попробуйте ещё раз." }</h2>
+        <img className="popup__auth-icon" src={ isError ? failedIcon : successfullIcon } alt="Иконка статуса события"/>
+        <h2 className="popup__title">{ text }</h2>
         <button 
           className="popup__btn-close button-zeroing transition-opacity" 
           type="button" 
@@ -23,3 +23,5 @@ export default function InfoTooltip({
     </div>
   )
 }
+
+// isRegister ? 'Вы успешно зарегистрировались!' : "Что-то пошло не так! Попробуйте ещё раз." 
