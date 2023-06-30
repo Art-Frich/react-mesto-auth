@@ -200,6 +200,7 @@ class Api {
         } else { 
           console.log( this._infoMsg + err );
         }
+        return Promise.reject();
       })
   }
 
@@ -226,36 +227,38 @@ class Api {
       })
       .catch( err => {
         if ( err.status === 400 ){
-          alert( this._infoMsg +  "не передано одно из полей." );
+          console.log( this._infoMsg +  "не передано одно из полей." );
         } else if( err.status === 401 ){
-          alert( this._infoMsg + "пользователь с email не найден." );
+          console.log( this._infoMsg + "пользователь с email не найден." );
         } else { 
-          alert( this._infoMsg + err );
+          console.log( this._infoMsg + err );
         }
+        return Promise.reject();
       })
   }
 
-  checkJWT(){
-    return fetch( this._urlAuthServer + this._qUsersMe, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${ this._tokenAuth }`
+  async checkJWT(){
+    try {
+      const res = await fetch(this._urlAuthServer + this._qUsersMe, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this._tokenAuth}`
+        }
+      });
+      return await (!res.ok
+        ? Promise.reject(res)
+        : res.json());
+    } catch (err) {
+      if (err.status === 400) {
+        console.log(this._infoMsg + "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Токен не передан или передан не в том формате.");
+      } else if (err.status === 401) {
+        console.log(this._infoMsg + "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Переданный токен некорректен.");
+      } else {
+        console.log(this._infoMsg + "Кажется, вы ранее у вас нет в браузере сохраненной сессии с доступом. " + err);
       }
-    }).then( res => {
-      return !res.ok
-      ? Promise.reject( res )
-      : res.json();
-    })
-    .catch( err => {
-      if ( err.status === 400 ){
-        console.log( this._infoMsg + "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Токен не передан или передан не в том формате." );
-      } else if( err.status === 401 ){
-        console.log( this._infoMsg + "Кажется, предыдущая сессия устарели и по ней невозможно авторизоваться. Переданный токен некорректен." );
-      } else { 
-        console.log( this._infoMsg + "Кажется, вы ранее у вас нет в браузере сохраненной сессии с доступом. " + err );
-      }
-    })
+      return Promise.reject();
+    }
   }
 
   _handleFetch( fetch ){

@@ -140,7 +140,7 @@ export default function App() {
         navigate('/');
       })
       .catch( () => {
-        setTextInfo('Не удалось авторизоваться на сервере или изменить данные после запроса.');
+        setTextInfo('Не удалось авторизоваться на сервере.');
         setIsError( true );
         setIsInfoToolTipOpen( true );
       })
