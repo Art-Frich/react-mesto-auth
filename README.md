@@ -1,5 +1,5 @@
 # Mesto (on React)
-### [Ссылка на проект](https://art-frich.github.io/react-mesto-auth/) - осторожно, после обновления странички оно перестанет работать и нужно заново пройти по ссылке... (нюансы работы react, index.html и pages-environment)
+### [Ссылка на проект](https://art-frich.github.io/react-mesto-auth/) - работает на gh-pages. Имеет side effects.
 ### О чем?
 
 Проект служит для отработки работы с React, для чего был произведён рефакторинг проекта [Mesto](https://github.com/Art-Frich/mesto)
